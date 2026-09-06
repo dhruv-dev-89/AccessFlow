@@ -55,4 +55,28 @@ const createUser=async (req,res)=>{
     }
 };
 
-export {createUser}
+
+const getUsers=async (req,res)=>{
+
+    try {
+        const users=await prisma.user.findMany({
+            omit:{
+                password:true
+            }
+        })
+
+        res.status(200).json({
+            message:"users fetched successfully",
+            users
+        })
+
+    } catch (error) {
+        res.json({
+            message:"failed to fetch users",
+            error:error.message
+        });
+    }
+}
+
+
+export {createUser,getUsers}
