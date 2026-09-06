@@ -1,5 +1,6 @@
 import prisma from "../lib/prisma.js";
 import bcrypt from "bcrypt";
+import { useParams } from "react-router-dom";
 import validator from "validator";
 
 
@@ -55,7 +56,7 @@ const createUser=async (req,res)=>{
     }
 };
 
-
+// this function is used to get all users
 const getUsers=async (req,res)=>{
 
     try {
@@ -79,4 +80,31 @@ const getUsers=async (req,res)=>{
 }
 
 
-export {createUser,getUsers}
+const getUserById=async (req,res)=>{
+    try {
+        const {id}=req.params;
+
+        const user=await prisma.user.findUnique({
+            where:{
+                id:Number(id)
+            },
+            omit:{
+                password:true
+            }
+        })
+
+        if(!user){
+            return res.status(404).json({
+                message:"user not found"
+            })
+        }
+
+        res.status(200).json({user})
+    } catch (error) {
+        res.status(500).json({
+            message:"failed to fetch user",
+            error:error.message
+        })
+    }
+}
+export {createUser,getUsers,getUserById};
