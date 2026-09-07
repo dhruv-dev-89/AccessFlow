@@ -79,7 +79,7 @@ const getUsers=async (req,res)=>{
     }
 }
 
-
+// it will give users on base of id
 const getUserById=async (req,res)=>{
     try {
         const {id}=req.params;
@@ -107,4 +107,56 @@ const getUserById=async (req,res)=>{
         })
     }
 }
-export {createUser,getUsers,getUserById};
+
+// now updating user details 
+
+const updateUserDetails=async (req,res)=>{
+
+    try {
+        const {name,email}=req.body;
+        const id=req.params.id;
+
+        if (name !== undefined) {
+            if (name.trim().length < 2) {
+                return res.status(400).json({
+                    message: "Name must be at least 2 characters"
+                });
+            }
+        }
+
+        if (email !== undefined) {
+            if (!validator.isEmail(email)) {
+                return res.status(400).json({
+                    message: "Invalid email format"
+                });
+            }
+        }
+    
+        const updatedUser=await prisma.user.update({
+            where:{
+                id:Number(id)
+            },
+            data:{
+                name:name,
+                email:email
+            },
+            omit:{
+                password:true
+            }
+        })
+        res.status(200).json({updatedUser});
+    } catch (error) {
+
+        if (error.code === "P2002") {
+            return res.status(409).json({
+                message: "Email already exists"
+            });
+        }
+
+        res.status(500).json({
+            message:"updating user details failed",
+            error:error.message
+        })
+    }
+}
+export {createUser,getUsers,getUserById,updateUserDetails};
