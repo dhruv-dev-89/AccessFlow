@@ -4,6 +4,7 @@ import prisma from "./lib/prisma.js";
 
 import userRoutes from "./routes/users.routes.js"
 import organizationRoutes from "./routes/organization.routes.js"
+import resourceRoutes from "./routes/resources.routes.js"
 
 app.use(express.json());
 
@@ -16,4 +17,5 @@ app.use("/api",userRoutes);
 
 app.use("/api",organizationRoutes);
 
+app.use("/api",resourceRoutes);
 export default app

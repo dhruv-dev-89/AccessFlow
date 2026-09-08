@@ -159,4 +159,32 @@ const updateUserDetails=async (req,res)=>{
         })
     }
 }
-export {createUser,getUsers,getUserById,updateUserDetails};
+
+
+
+const deleteUser=async (req,res)=>{
+
+    try {
+        const {id}=req.params;
+
+        const userIsActive=await prisma.user.update({
+            where:{
+                id:Number(id)
+            },
+            data:{
+                isActive:false
+            },
+            omit:{
+                password:true
+            }
+        })
+
+        res.status(200).json({userIsActive});
+    } catch (error) {
+        res.status(500).json({
+            message:"failed to delete user",
+            error:error.message
+        })
+    }
+}
+export {createUser,getUsers,getUserById,updateUserDetails,deleteUser};
