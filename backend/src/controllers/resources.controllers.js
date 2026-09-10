@@ -102,4 +102,24 @@ const updateResource=async (req,res)=>{
         })
     }
 }
+
+
+const deleteResource=async (req,res)=>{
+
+    try {
+        const id=req.params.id;
+
+        const deletedUser=await prisma.resource.delete({
+            where:{
+                id:Number(id)
+            }
+        })
+
+        res.status(200).json({deletedUser})
+    } catch (error) {
+        if(error.)
+        res.status(404)
+        
+    }
+}
 export {createResources,getResourceById,getResource,updateResource}
