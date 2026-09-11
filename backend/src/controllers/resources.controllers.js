@@ -117,9 +117,16 @@ const deleteResource=async (req,res)=>{
 
         res.status(200).json({deletedUser})
     } catch (error) {
-        if(error.)
-        res.status(404)
+        if(error.code==="P2025"){
+            return res.status(404).json({
+                message:"Resource not found"
+            })
+        }
         
+        res.status(500).json({
+            message:"Failed to delete Resource",
+            error:error.message
+        });
     }
 }
-export {createResources,getResourceById,getResource,updateResource}
+export {createResources,getResourceById,getResource,updateResource,deleteResource}
