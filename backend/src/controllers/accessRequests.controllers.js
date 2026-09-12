@@ -24,23 +24,63 @@ const accessRequest=async (req,res)=>{
 }
 
 
-const getAllAccessRequest=async (req,res){
+const getAllAccessRequests=async (req,res)=>{
     try {
         const accessRequests=await prisma.accessRequest.findMany();
 
-        if(!accessRequests){
-            return res.status(404).json({
-                message:"There is not any access request exist"
-            })
-        }
-
         res.status(200).json({accessRequests});
     } catch (error) {
-        res.status.json({
+        res.status(500).json({
             message:"failed to fetch access requests",
             error:error.message
         })
     }
 }
 
-export {accessRequest,getAllAccessRequest}
+const getAccessRequestById=async (req,res)=>{
+    try {
+        const id=req.params.id;
+
+        const getRequest=await prisma.accessRequest.findUnique({
+            where:{
+                id:Number(id)
+            }
+        })
+
+        if (!getRequest){
+            return res.status(404).json({
+                message: "Request not found"
+            });
+        }
+
+        res.status(200).json({getRequest});
+    } catch (error) {
+        res.status(500).json({
+            message:"failed to fetch access request",
+            error:error.message
+        })
+
+    }
+}
+
+
+const getAllRequestsMadeByUser=async (req,res)=>{
+    try {
+        const userId=req.params.id;
+        
+        const requestsMadeByUser=await prisma.accessRequest.findMany({
+            where:{
+                requestedById:Number(userId)
+            }
+        });
+
+        res.status(200).json({requestsMadeByUser});
+    } catch (error) {
+        
+        res.status(500).json({
+            message:"Failed to fetch access requests made by user",
+            error:error.message
+        })
+    }
+}
+export {accessRequest,getAllAccessRequests,getAccessRequestById,getAllRequestsMadeByUser}
