@@ -23,4 +23,24 @@ const accessRequest=async (req,res)=>{
     }
 }
 
-export {accessRequest}
+
+const getAllAccessRequest=async (req,res){
+    try {
+        const accessRequests=await prisma.accessRequest.findMany();
+
+        if(!accessRequests){
+            return res.status(404).json({
+                message:"There is not any access request exist"
+            })
+        }
+
+        res.status(200).json({accessRequests});
+    } catch (error) {
+        res.status.json({
+            message:"failed to fetch access requests",
+            error:error.message
+        })
+    }
+}
+
+export {accessRequest,getAllAccessRequest}
