@@ -83,4 +83,36 @@ const getAllRequestsMadeByUser=async (req,res)=>{
         })
     }
 }
-export {accessRequest,getAllAccessRequests,getAccessRequestById,getAllRequestsMadeByUser}
+
+
+const deleteRequestMadeByUser=async (req,res)=>{
+    try {
+        const id=req.params.id;
+
+        const deletedRequest = await prisma.accessRequest.deleteMany({
+            where: {
+                id: Number(id),
+                status: "PENDING"
+            }
+        });
+
+        if (deletedRequest.count === 0) {
+            return res.status(404).json({
+                message: "Pending request not found"
+            });
+        }
+
+        res.status(200).json({
+            message: "Access request cancelled successfully"
+        });
+        
+    } catch (error) {
+        res.status(500).json({
+            message:"Failed to deleted request",
+            error:error.message
+        })
+    }
+}
+
+
+export {accessRequest,getAllAccessRequests,getAccessRequestById,getAllRequestsMadeByUser,deleteRequestMadeByUser}
