@@ -4,7 +4,7 @@ import prisma from "../lib/prisma.js";
 const accessRequest=async (req,res)=>{
     try {
         const userId=req.params.id;
-        const {reason,rresourceId}=req.body;
+        const {reason,resourceId}=req.body;
 
         const accessRequestMade=await prisma.accessRequest.create({
             data:{

@@ -6,6 +6,7 @@ import userRoutes from "./routes/users.routes.js"
 import organizationRoutes from "./routes/organization.routes.js"
 import resourceRoutes from "./routes/resources.routes.js"
 import accessRequestRoutes from "./routes/accessRequest.routes.js"
+import approvalRoutes from "./routes/approval.routes.js"
 
 app.use(express.json());
 
@@ -21,5 +22,7 @@ app.use("/api",organizationRoutes);
 app.use("/api",resourceRoutes);
 
 app.use("/api",accessRequestRoutes);
+
+app.use("/api",approvalRoutes);
 
 export default app
