@@ -1,8 +1,14 @@
 import express from "express";
-import { accessGrant } from "../controllers/accessGrant.controllers.js";
+import { accessGrant, getAccessGrantById, getAllAccessGrant } from "../controllers/accessGrant.controllers.js";
 
 const router=express.Router();
 
-router.post("/accessGranted/:id",accessGrant);
+router.post("/access-grants/:id",accessGrant);
+
+router.get("/access-grants/:id",getAccessGrantById);
+
+router.get("/access-grants",getAllAccessGrant);
+
+router.patch("/access-grants/:id/revoke", revokeAccessGrant);
 
 export default router

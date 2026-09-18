@@ -43,11 +43,17 @@ const getAccessGrantById=async (req,res)=>{
     try {
         const grantId=req.params.id;
 
-        const accessgrant=await prisma.accessGrant.findUnique({
+        const accessGrant=await prisma.accessGrant.findUnique({
             where:{
                 id:Number(grantId)
             }
         })
+
+        if (!accessGrant) {
+            return res.status(404).json({
+                message: "Access grant not found"
+            });
+        }
 
         res.status(200).json({accessGrant})
     } catch (error) {
@@ -57,18 +63,12 @@ const getAccessGrantById=async (req,res)=>{
         })
     }
 }
-
 
 
 const getAllAccessGrant=async (req,res)=>{
     try {
-        const grantId=req.params.id;
 
-        const accessgrant=await prisma.accessGrant.findUnique({
-            where:{
-                id:Number(grantId)
-            }
-        })
+        const accessgrant=await prisma.accessGrant.findMany()
 
         res.status(200).json({accessGrant})
     } catch (error) {
@@ -80,4 +80,36 @@ const getAllAccessGrant=async (req,res)=>{
 }
 
 
-export {accessGrant,getAccessGrantById};
+const revokeAccessGrant=async (req,res)=>{
+    try {
+        const id=req.params.id;
+
+        const revokedGrant=await prisma.accessGrant.update({
+            where:{
+                id:Number(id)
+            },
+            data:{
+                revokedAt:new Date()
+            }
+        })
+
+        
+
+        res.status(200).json({revokedGrant});
+    } catch (error) {
+
+        if (error.code === "P2025") {
+            return res.status(404).json({
+                message: "Access grant not found"
+            });
+        }
+
+        res.status(500).json({
+            message:"Failed to revoke request",
+            error:error.message
+        })
+    }
+}
+
+
+export {accessGrant,getAccessGrantById,getAllAccessGrant,revokeAccessGrant};
