@@ -82,7 +82,37 @@ const getUsers=async (req,res)=>{
 // it will give users on base of id
 const getUserById=async (req,res)=>{
     try {
-        const {id}=req.params;
+        const id=req.user.userId;
+
+        const user=await prisma.user.findUnique({
+            where:{
+                id:Number(id)
+            },
+            omit:{
+                password:true
+            }
+        })
+
+        if(!user){
+            return res.status(404).json({
+                message:"user not found"
+            })
+        }
+
+        res.status(200).json({user})
+    } catch (error) {
+        res.status(500).json({
+            message:"failed to fetch user",
+            error:error.message
+        })
+    }
+}
+
+// get my profile
+
+const getMe=async (req,res)=>{
+    try {
+        const id=req.user.userId;
 
         const user=await prisma.user.findUnique({
             where:{
@@ -187,4 +217,4 @@ const deleteUser=async (req,res)=>{
         })
     }
 }
-export {createUser,getUsers,getUserById,updateUserDetails,deleteUser};
+export {createUser,getUsers,getMe,getUserById,updateUserDetails,deleteUser};

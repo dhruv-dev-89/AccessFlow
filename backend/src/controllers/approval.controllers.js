@@ -1,4 +1,5 @@
 import prisma from "../lib/prisma.js";
+import { createLogs } from "./auditlogs.controllers.js";
 
 
 const approveRequest=async (req,res)=>{
@@ -39,7 +40,14 @@ const approveRequest=async (req,res)=>{
             }
         })
         
-
+        if(approveRequestStatus){
+            await createLogs(
+                approverId,
+                "ACCESS_APPROVED",
+                accessRequestId,
+                checkStatusOfRequest.resourceId
+            )
+        }
         res.status(201).json({approveRequestStatus});
     } catch (error) {
         res.status(500).json({
@@ -87,6 +95,15 @@ const rejectRequest=async (req,res)=>{
                 status:"REJECTED"
             }
         })
+
+        if(rejectedRequestStatus){
+            await createLogs(
+                rejectorId,
+                "ACCESS_REJECTED",
+                accessRequestId,
+                checkStatusOfRequest.resourceId
+            )
+        }
 
         res.status(201).json({rejectedRequestStatus});
     } catch (error) {

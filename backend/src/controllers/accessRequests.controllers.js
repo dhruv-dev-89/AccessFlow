@@ -1,4 +1,5 @@
 import prisma from "../lib/prisma.js";
+import { createLogs } from "./auditlogs.controllers.js";
 
 
 const accessRequest=async (req,res)=>{
@@ -14,6 +15,15 @@ const accessRequest=async (req,res)=>{
             }
         })
 
+        if(accessRequestMade){
+            await createLogs(
+                userId,
+                "ACCESS_REQUESTED",
+                accessRequestMade.id,
+                resourceId
+            )
+        }
+        
         res.status(201).json({accessRequestMade})
     } catch (error) {
         res.status(500).json({

@@ -7,10 +7,10 @@ router.post("/access-request/:id",accessRequest);
 
 router.get("/getAllRequests",getAllAccessRequests);
 
-router.get("/getAccessRequest/:id",getAccessRequestById);
+router.get("/access-request/:id",getAccessRequestById);
 
 router.get("/getAllRequestsMadeByUser/:id",getAllRequestsMadeByUser);
 
-router.delete("/deleteAccessRequest/:id",deleteRequestMadeByUser);
+router.delete("/access-request/:id",deleteRequestMadeByUser);
 
 export default router

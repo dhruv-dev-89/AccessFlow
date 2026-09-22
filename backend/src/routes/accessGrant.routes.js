@@ -1,5 +1,5 @@
 import express from "express";
-import { accessGrant, getAccessGrantById, getAllAccessGrant } from "../controllers/accessGrant.controllers.js";
+import { accessGrant, getAccessGrantById, getAllAccessGrant, revokeAccessGrant } from "../controllers/accessGrant.controllers.js";
 
 const router=express.Router();
 

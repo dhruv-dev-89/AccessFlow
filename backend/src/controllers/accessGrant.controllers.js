@@ -1,4 +1,5 @@
 import prisma from "../lib/prisma.js";
+import { createLogs } from "./auditlogs.controllers.js";
 
 
 const accessGrant=async (req,res)=>{
@@ -28,6 +29,13 @@ const accessGrant=async (req,res)=>{
                 expiresAt: new Date(expiresAt)
             }
         })
+
+        await createLogs(
+            userId,
+            "ACCESS_GRANTED",
+            accessRequestId,
+            request.resourceId
+        )
 
         res.status(201).json({accessGranted});
     } catch (error) {
@@ -93,8 +101,13 @@ const revokeAccessGrant=async (req,res)=>{
             }
         })
 
+        await createLogs(
+            revokedGrant.userId,
+            "ACCESS_REVOKED",
+            revokedGrant.accessRequestId,
+            revokedGrant.resourceId
+        );
         
-
         res.status(200).json({revokedGrant});
     } catch (error) {
 
