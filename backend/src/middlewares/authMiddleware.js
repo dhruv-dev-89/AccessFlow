@@ -49,6 +49,7 @@ const authorize=(...allowedRoles)=>{
                 message:"Access Denied"
             });
         }
+        if(req.user.organizationId)
         next();
     }
 }

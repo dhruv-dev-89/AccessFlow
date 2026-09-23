@@ -4,7 +4,7 @@ import { createLogs } from "./auditlogs.controllers.js";
 
 const approveRequest=async (req,res)=>{
     try {
-        const approverId=req.params.id;
+        const approverId=req.user.id;
         const accessRequestId=req.body.accessRequestId;
         const comment=req.body.comment;
 
@@ -60,7 +60,7 @@ const approveRequest=async (req,res)=>{
 
 const rejectRequest=async (req,res)=>{
     try {
-        const rejectorId=req.params.id;
+        const rejectorId=req.user.id;
         const accessRequestId=req.body.accessRequestId;
         const comment=req.body.comment;
 

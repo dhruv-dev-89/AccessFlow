@@ -1,15 +1,16 @@
 import express from "express"
 import { accessRequest, deleteRequestMadeByUser, getAccessRequestById, getAllAccessRequests, getAllRequestsMadeByUser } from "../controllers/accessRequests.controllers.js";
+import { authMiddleware, authorize } from "../middlewares/authMiddleware.js";
 
 const router=express.Router();
 
-router.post("/access-request/:id",accessRequest);
+router.post("/access-requests",authMiddleware,accessRequest);
 
-router.get("/getAllRequests",getAllAccessRequests);
+router.get("/getAllRequests",authMiddleware,authorize("ADMIN","APPROVER"),getAllAccessRequests);
 
-router.get("/access-request/:id",getAccessRequestById);
+router.get("/access-request/:id",authMiddleware,getAccessRequestById);
 
-router.get("/getAllRequestsMadeByUser/:id",getAllRequestsMadeByUser);
+router.get("/getAllRequestsMadeByUser",authMiddleware,getAllRequestsMadeByUser);
 
 router.delete("/access-request/:id",deleteRequestMadeByUser);
 

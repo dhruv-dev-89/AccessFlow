@@ -195,11 +195,29 @@ const updateUserDetails=async (req,res)=>{
 const deleteUser=async (req,res)=>{
 
     try {
-        const {id}=req.params;
+         const targetUserId = Number(req.params.id);
+
+        const targetUser = await prisma.user.findUnique({
+            where: {
+                id: targetUserId
+            }
+        });
+
+        if (!targetUser) {
+            return res.status(404).json({
+                message: "User not found"
+            });
+        }
+
+        if (targetUser.organizationId !== req.user.organizationId) {
+            return res.status(403).json({
+                message: "You cannot manage users from another organization"
+            });
+        }
 
         const userIsActive=await prisma.user.update({
             where:{
-                id:Number(id)
+                id:targetUserId
             },
             data:{
                 isActive:false
@@ -217,4 +235,6 @@ const deleteUser=async (req,res)=>{
         })
     }
 }
+
+
 export {createUser,getUsers,getMe,getUserById,updateUserDetails,deleteUser};

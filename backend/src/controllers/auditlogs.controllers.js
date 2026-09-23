@@ -35,7 +35,7 @@ const getAuditLogsById=async (req,res)=>{
 
         const auditLogs=await prisma.auditLog.findUnique({
             where:{
-                id:id
+                id:Number(id)
             }
         });
 
@@ -55,4 +55,4 @@ const getAuditLogsById=async (req,res)=>{
 }
 
 
-export {createLogs}
+export {createLogs,getAllAuditLogs,getAuditLogsById}

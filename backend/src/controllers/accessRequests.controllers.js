@@ -4,7 +4,7 @@ import { createLogs } from "./auditlogs.controllers.js";
 
 const accessRequest=async (req,res)=>{
     try {
-        const userId=req.params.id;
+        const userId=req.user.id;
         const {reason,resourceId}=req.body;
 
         const accessRequestMade=await prisma.accessRequest.create({
@@ -51,9 +51,10 @@ const getAccessRequestById=async (req,res)=>{
     try {
         const id=req.params.id;
 
-        const getRequest=await prisma.accessRequest.findUnique({
+        const getRequest=await prisma.accessRequest.findFirst({
             where:{
-                id:Number(id)
+                id:Number(id),
+                requestedById: req.user.id
             }
         })
 

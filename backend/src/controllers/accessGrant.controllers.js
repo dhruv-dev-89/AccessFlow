@@ -4,7 +4,7 @@ import { createLogs } from "./auditlogs.controllers.js";
 
 const accessGrant=async (req,res)=>{
     try {
-        const userId=req.params.id;
+        const userId=req.user.id;
 
         const {resourceId,accessRequestId,expiresAt}=req.body;
 
@@ -51,9 +51,10 @@ const getAccessGrantById=async (req,res)=>{
     try {
         const grantId=req.params.id;
 
-        const accessGrant=await prisma.accessGrant.findUnique({
+        const accessGrant=await prisma.accessGrant.findFirst({
             where:{
-                id:Number(grantId)
+                id:Number(grantId),
+                userId: req.user.id
             }
         })
 
@@ -92,6 +93,24 @@ const revokeAccessGrant=async (req,res)=>{
     try {
         const id=req.params.id;
 
+        const grant = await prisma.accessGrant.findUnique({
+            where: {
+                id: Number(id)
+            }
+        });
+
+        if (!grant) {
+            return res.status(404).json({
+                message: "Access grant not found"
+            });
+        }
+
+        if (grant.revokedAt) {
+            return res.status(400).json({
+                message: "Access grant is already revoked"
+            });
+        }
+        
         const revokedGrant=await prisma.accessGrant.update({
             where:{
                 id:Number(id)
