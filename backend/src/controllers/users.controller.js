@@ -59,8 +59,12 @@ const createUser=async (req,res)=>{
 // this function is used to get all users
 const getUsers=async (req,res)=>{
 
+    const organizationId=req.user.organizationId;
     try {
         const users=await prisma.user.findMany({
+            where:{
+                organizationId:organizationId
+            },
             omit:{
                 password:true
             }
@@ -82,7 +86,7 @@ const getUsers=async (req,res)=>{
 // it will give users on base of id
 const getUserById=async (req,res)=>{
     try {
-        const id=req.user.userId;
+        const id=req.user.id;
 
         const user=await prisma.user.findUnique({
             where:{
@@ -112,7 +116,7 @@ const getUserById=async (req,res)=>{
 
 const getMe=async (req,res)=>{
     try {
-        const id=req.user.userId;
+        const id=req.user.id;
 
         const user=await prisma.user.findUnique({
             where:{
@@ -144,7 +148,7 @@ const updateUserDetails=async (req,res)=>{
 
     try {
         const {name,email}=req.body;
-        const id=req.params.id;
+        const id=req.user.id;
 
         if (name !== undefined) {
             if (name.trim().length < 2) {

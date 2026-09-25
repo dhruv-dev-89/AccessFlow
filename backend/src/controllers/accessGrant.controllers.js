@@ -77,9 +77,15 @@ const getAccessGrantById=async (req,res)=>{
 const getAllAccessGrant=async (req,res)=>{
     try {
 
-        const accessgrant=await prisma.accessGrant.findMany()
+        const accessgrant = await prisma.accessGrant.findMany({
+            where: {
+                user: {
+                    organizationId: req.user.organizationId
+                }
+            }
+        });
 
-        res.status(200).json({accessGrant})
+        res.status(200).json({accessGrant});
     } catch (error) {
         res.status(500).json({
             message:"failed to fetch access grant",

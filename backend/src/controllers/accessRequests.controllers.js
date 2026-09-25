@@ -7,6 +7,19 @@ const accessRequest=async (req,res)=>{
         const userId=req.user.id;
         const {reason,resourceId}=req.body;
 
+        const resource=await prisma.resource.findFirst({
+            where:{
+                id:Number(resourceId),
+                organizationId:req.user.organizationId
+            }
+        })
+
+        if(!resource){
+            return res.status(404).json({
+                message:"Resource not found"
+            })
+        }
+
         const accessRequestMade=await prisma.accessRequest.create({
             data:{
                 reason:reason,
@@ -36,7 +49,13 @@ const accessRequest=async (req,res)=>{
 
 const getAllAccessRequests=async (req,res)=>{
     try {
-        const accessRequests=await prisma.accessRequest.findMany();
+        const accessRequests=await prisma.accessRequest.findMany({
+            where:{
+                requestedBy:{
+                    organizationId:req.user.organizationId
+                }
+            }
+        });
 
         res.status(200).json({accessRequests});
     } catch (error) {
@@ -54,7 +73,7 @@ const getAccessRequestById=async (req,res)=>{
         const getRequest=await prisma.accessRequest.findFirst({
             where:{
                 id:Number(id),
-                requestedById: req.user.id
+                requestedById: req.user.id,
             }
         })
 
@@ -77,7 +96,7 @@ const getAccessRequestById=async (req,res)=>{
 
 const getAllRequestsMadeByUser=async (req,res)=>{
     try {
-        const userId=req.params.id;
+        const userId=req.user.id;
         
         const requestsMadeByUser=await prisma.accessRequest.findMany({
             where:{
@@ -103,7 +122,8 @@ const deleteRequestMadeByUser=async (req,res)=>{
         const deletedRequest = await prisma.accessRequest.deleteMany({
             where: {
                 id: Number(id),
-                status: "PENDING"
+                status: "PENDING",
+                requestedById: req.user.id
             }
         });
 

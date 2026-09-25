@@ -1,4 +1,5 @@
 import app from "./src/app.js"
+import "./src/jobs/accessExpiry.job.js";
 
 import dotenv from "dotenv"
 dotenv.config();

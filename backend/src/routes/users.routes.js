@@ -5,13 +5,13 @@ const router=express.Router();
 
 router.post("/createuser",createUser);
 
-router.post("/users",getUsers);
+router.post("/users",authMiddleware,authorize("ADMIN"),getUsers);
 
 router.get("/user/me",authMiddleware,getMe);
 
 router.get("/user",authMiddleware,getUserById);
 
-router.patch("/user/:id",updateUserDetails);
+router.patch("/user/me",authMiddleware,updateUserDetails);
 
 router.delete("/user/:id",authMiddleware,authorize("ADMIN"),deleteUser);
 

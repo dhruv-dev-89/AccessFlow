@@ -31,6 +31,12 @@ const authMiddleware=async (req,res,next)=>{
             });
         }
 
+        if (!user.isActive) {
+            return res.status(403).json({
+                message: "User account is inactive"
+            });
+        }
+
         req.user = user;
 
         next();
@@ -49,7 +55,6 @@ const authorize=(...allowedRoles)=>{
                 message:"Access Denied"
             });
         }
-        if(req.user.organizationId)
         next();
     }
 }

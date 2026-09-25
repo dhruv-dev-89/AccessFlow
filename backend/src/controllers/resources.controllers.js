@@ -5,13 +5,12 @@ const createResources=async (req,res)=>{
     try{
         const resourceName=req.body.name;
         const resourceDescription=req.body.description;
-        const organizationId=req.body.organizationId;
-
+        
         const resource=await prisma.resource.create({
             data:{
                 name:resourceName,
                 description:resourceDescription,
-                organizationId:organizationId
+                organizationId:req.user.organizationId
             }
         })
 
@@ -32,7 +31,8 @@ const getResourceById=async (req,res)=>{
         
         const resource=await prisma.resource.findUnique({
             where:{
-                id:Number(resourceId)
+                id:Number(resourceId),
+                organizationId: req.user.organizationId
             }
         })
 
@@ -53,10 +53,14 @@ const getResourceById=async (req,res)=>{
 
 const getResource=async (req,res)=>{
     try {
-        const resources=await prisma.resource.findMany();
+        const resources=await prisma.resource.findMany({
+            where:{
+                organizationId:req.user.organizationId
+            }
+        });
 
         if(resources.length===0){
-            res.status(404).json({
+            return res.status(404).json({
                 message:"Resources are not found for the organization"
             })
         }
@@ -75,16 +79,16 @@ const updateResource=async (req,res)=>{
         const resourceId=req.params.id;
         const updatedName=req.body.name;
         const updatedDescription=req.body.description;
-        const organizationId=req.body.organizationId;
+        
 
         const updatedResource=await prisma.resource.update({
             where:{
-                id:Number(resourceId)
+                id:Number(resourceId),
+                organizationId:req.user.organizationId
             },
             data:{
                 ...(updatedName!==undefined&&{name:updatedName}),
                 ...(updatedDescription!==undefined&&{description:updatedDescription}),
-                ...(organizationId!==undefined&&{organizationId:organizationId})
             }
         })
 
@@ -109,13 +113,26 @@ const deleteResource=async (req,res)=>{
     try {
         const id=req.params.id;
 
-        const deletedUser=await prisma.resource.delete({
-            where:{
-                id:Number(id)
+        const resource = await prisma.resource.findFirst({
+            where: {
+                id: Number(id),
+                organizationId: req.user.organizationId
             }
-        })
+        });
 
-        res.status(200).json({deletedUser})
+        if (!resource) {
+            return res.status(404).json({
+                message: "Resource not found"
+            });
+        }
+
+        const deletedResource=await prisma.resource.delete({
+            where:{
+                id:resource.id,
+            }
+        });
+
+        res.status(200).json({deletedResource});
     } catch (error) {
         if(error.code==="P2025"){
             return res.status(404).json({
@@ -129,4 +146,5 @@ const deleteResource=async (req,res)=>{
         });
     }
 }
+
 export {createResources,getResourceById,getResource,updateResource,deleteResource}

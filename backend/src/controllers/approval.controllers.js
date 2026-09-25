@@ -22,24 +22,28 @@ const approveRequest=async (req,res)=>{
             });
         }
 
-        const approveRequestStatus=await prisma.approval.create({
-            data:{
-                decision:"APPROVED",
-                comment:comment,
-                accessRequestId:Number(accessRequestId),
-                approvedById:Number(approverId)
-            }
-        })
+        const approveRequestStatus=await prisma.$transaction(async (tx)=>{
 
-        await prisma.accessRequest.update({
-            where:{
-                id:Number(accessRequestId),
-            },
-            data:{
-                status:"APPROVED"
-            }
-        })
-        
+            const approval=await tx.approval.create({
+                data:{
+                    decision:"APPROVED",
+                    comment:comment,
+                    accessRequestId:Number(accessRequestId),
+                    approvedById:Number(approverId)
+                }
+            })
+
+            await tx.accessRequest.update({
+                where:{
+                    id:Number(accessRequestId),
+                },
+                data:{
+                    status:"APPROVED"
+                }
+            })
+
+            return approval;
+        });
         if(approveRequestStatus){
             await createLogs(
                 approverId,
@@ -78,23 +82,26 @@ const rejectRequest=async (req,res)=>{
         }
 
 
-        const rejectedRequestStatus=await prisma.approval.create({
-            data:{
-                decision:"REJECTED",
-                comment:comment,
-                accessRequestId:Number(accessRequestId),
-                approvedById:Number(rejectorId)
-            }
-        })
+        const rejectedRequestStatus=await prisma.$transaction(async (tx)=>{
+            const rejection=await tx.approval.create({
+                data:{
+                    decision:"REJECTED",
+                    comment:comment,
+                    accessRequestId:Number(accessRequestId),
+                    approvedById:Number(rejectorId)
+                }
+            })
 
-        await prisma.accessRequest.update({
-            where:{
-                id:Number(accessRequestId),
-            },
-            data:{
-                status:"REJECTED"
-            }
-        })
+            await tx.accessRequest.update({
+                where:{
+                    id:Number(accessRequestId),
+                },
+                data:{
+                    status:"REJECTED"
+                }
+            })
+            return rejection;
+        });
 
         if(rejectedRequestStatus){
             await createLogs(
