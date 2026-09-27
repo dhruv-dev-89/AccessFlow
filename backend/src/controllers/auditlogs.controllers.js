@@ -17,7 +17,13 @@ const createLogs=async (userId,action,accessRequestId,resourceId)=>{
 
 const getAllAuditLogs=async (req,res)=>{
     try {
-        const auditLogs=await prisma.auditLog.findMany();
+        const auditLogs=await prisma.auditLog.findMany({
+            where: {
+                user: {
+                    organizationId: req.user.organizationId
+                }
+            }
+        });
 
         res.status(200).json({auditLogs});
     } catch (error) {
@@ -33,9 +39,12 @@ const getAuditLogsById=async (req,res)=>{
     try {
         const id=req.params.id;
 
-        const auditLogs=await prisma.auditLog.findUnique({
+        const auditLogs=await prisma.auditLog.findFirst({
             where:{
-                id:Number(id)
+                id:Number(id),
+                user: {
+                    organizationId: req.user.organizationId
+                }
             }
         });
 

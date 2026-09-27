@@ -99,9 +99,12 @@ const revokeAccessGrant=async (req,res)=>{
     try {
         const id=req.params.id;
 
-        const grant = await prisma.accessGrant.findUnique({
+        const grant = await prisma.accessGrant.findFirst({
             where: {
-                id: Number(id)
+                id: Number(id),
+                user: {
+                    organizationId: req.user.organizationId
+                }
             }
         });
 
