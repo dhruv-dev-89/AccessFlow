@@ -10,6 +10,7 @@ import approvalRoutes from "./routes/approval.routes.js"
 import accessGrantRoutes from "./routes/accessGrant.routes.js"
 import auditLogsRoutes from "./routes/auditlogs.routes.js"
 import authRoutes from "./routes/auth.routes.js";
+import joinRequestRoutes from "./routes/joinRequest.routes.js"
 
 app.use(express.json());
 
@@ -34,7 +35,6 @@ app.use("/api",accessGrantRoutes);
 
 app.use("api",auditLogsRoutes);
 
-
-
+app.use("api",joinRequestRoutes);
 
 export default app

@@ -33,7 +33,6 @@ const createUser=async (req,res)=>{
             name:name,
             email:email,
             password:hashedPassword,
-            organizationId:1
             },
             omit:{
                 password:true
