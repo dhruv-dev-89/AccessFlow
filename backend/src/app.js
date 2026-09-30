@@ -14,10 +14,6 @@ import joinRequestRoutes from "./routes/joinRequest.routes.js"
 
 app.use(express.json());
 
-app.get("/",async (req,res)=>{
-    const users=await prisma.user.findMany();
-    res.json(users);
-})
 
 app.use("/api", authRoutes);
 
@@ -33,8 +29,8 @@ app.use("/api",approvalRoutes);
 
 app.use("/api",accessGrantRoutes);
 
-app.use("api",auditLogsRoutes);
+app.use("/api",auditLogsRoutes);
 
-app.use("api",joinRequestRoutes);
+app.use("/api",joinRequestRoutes);
 
 export default app

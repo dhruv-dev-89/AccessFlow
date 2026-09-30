@@ -6,6 +6,12 @@ const createResources=async (req,res)=>{
         const resourceName=req.body.name;
         const resourceDescription=req.body.description;
         
+        if (!resourceName || resourceName.trim().length < 2) {
+            return res.status(400).json({
+                message: "Resource name must be at least 2 characters"
+            });
+        }
+
         const resource=await prisma.resource.create({
             data:{
                 name:resourceName,
@@ -29,10 +35,10 @@ const getResourceById=async (req,res)=>{
     try {
         const resourceId=req.params.id;
         
-        const resource=await prisma.resource.findUnique({
+        const resource=await prisma.resource.findFirst({
             where:{
                 id:Number(resourceId),
-                organizationId: req.user.organizationId
+                organizationId:req.user.organizationId
             }
         })
 
@@ -81,13 +87,33 @@ const updateResource=async (req,res)=>{
         const updatedDescription=req.body.description;
         
 
+        if (
+            updatedName !== undefined &&
+            (!updatedName.trim() || updatedName.trim().length < 2)
+        ) {
+            return res.status(400).json({
+                message: "Resource name must be at least 2 characters"
+            });
+        }
+
+        const resource = await prisma.resource.findFirst({
+            where: {
+                id: Number(resourceId),
+                organizationId: req.user.organizationId
+            }
+        });
+
+        if (!resource) {
+            return res.status(404).json({
+                message: "Resource not found"
+            });
+        }
         const updatedResource=await prisma.resource.update({
             where:{
-                id:Number(resourceId),
-                organizationId:req.user.organizationId
+                id: Number(resourceId)
             },
             data:{
-                ...(updatedName!==undefined&&{name:updatedName}),
+                ...(updatedName!==undefined&&{name:updatedName.trim()}),
                 ...(updatedDescription!==undefined&&{description:updatedDescription}),
             }
         })
@@ -106,7 +132,6 @@ const updateResource=async (req,res)=>{
         })
     }
 }
-
 
 const deleteResource=async (req,res)=>{
 

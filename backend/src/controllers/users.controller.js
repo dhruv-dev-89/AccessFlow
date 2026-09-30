@@ -21,7 +21,7 @@ const createUser=async (req,res)=>{
                 message:"invalid email format"
             });
         }
-        if(password.trim().length<6){
+        if(!password&&password.trim().length<6){
             return res.status(400).json({
                 message:"password must be at least 6 characters"
             })

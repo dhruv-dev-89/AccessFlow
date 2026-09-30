@@ -29,6 +29,12 @@ const login=async (req,res)=>{
             })
         }
 
+        if (!user.isActive) {
+            return res.status(403).json({
+                message: "User account is inactive"
+            });
+        }
+        
         const token=jwt.sign({
             userId:user.id,
             email:user.email,

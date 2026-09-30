@@ -13,7 +13,7 @@ const joinOrganization=async (req,res)=>{
         
         const organizationCheck=await prisma.organization.findUnique({
             where:{
-                id:organizationId
+                id:Number(organizationId)
             }
         });
 
@@ -102,6 +102,9 @@ const approveRequest=async (req,res)=>{
                 },
                 data:{
                     organizationId:joinRequest.organizationId
+                },
+                omit:{
+                    password:true
                 }
             })
 

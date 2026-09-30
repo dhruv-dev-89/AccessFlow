@@ -3,6 +3,6 @@ import { createOrganization } from "../controllers/organization.controller.js"
 import { authMiddleware, authorize } from "../middlewares/authMiddleware.js";
 const router=express.Router()
 
-router.post("/create-organization",authMiddleware,authorize("ADMIN"),createOrganization);
+router.post("/create-organization",authMiddleware,createOrganization);
 
 export default router

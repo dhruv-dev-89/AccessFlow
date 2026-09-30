@@ -7,6 +7,12 @@ const createOrganization= async (req,res)=>{
 
         const userId = req.user.id;
 
+        if (!name || name.trim().length < 2) {
+            return res.status(400).json({
+                message: "Organization name must be at least 2 characters"
+            });
+        }
+
         if (req.user.organizationId) {
             return res.status(400).json({
                 message: "User already belongs to an organization"

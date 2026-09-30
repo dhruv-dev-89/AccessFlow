@@ -5,14 +5,17 @@ import { createLogs } from "./auditlogs.controllers.js";
 const approveRequest=async (req,res)=>{
     try {
         const approverId=req.user.id;
-        const accessRequestId=req.body.accessRequestId;
+        const accessRequestId=req.params.id;
         const comment=req.body.comment;
 
         
         const checkStatusOfRequest = await prisma.accessRequest.findFirst({
             where: {
                 id: Number(accessRequestId),
-                status: "PENDING"
+                status: "PENDING",
+                resource:{
+                    organizationId: req.user.organizationId
+                }
             }
         });
 
@@ -55,7 +58,7 @@ const approveRequest=async (req,res)=>{
         res.status(201).json({approveRequestStatus});
     } catch (error) {
         res.status(500).json({
-            message:"Failed to create approval request",
+            message:"Failed to approve access request",
             error:error.message
         })
     }
@@ -65,13 +68,16 @@ const approveRequest=async (req,res)=>{
 const rejectRequest=async (req,res)=>{
     try {
         const rejectorId=req.user.id;
-        const accessRequestId=req.body.accessRequestId;
+        const accessRequestId=req.params.id;
         const comment=req.body.comment;
 
         const checkStatusOfRequest = await prisma.accessRequest.findFirst({
             where: {
                 id: Number(accessRequestId),
-                status: "PENDING"
+                status: "PENDING",
+                resource:{
+                    organizationId: req.user.organizationId
+                }
             }
         });
 
@@ -115,7 +121,7 @@ const rejectRequest=async (req,res)=>{
         res.status(201).json({rejectedRequestStatus});
     } catch (error) {
         res.status(500).json({
-            message:"Failed to create approval request",
+            message:"Failed to reject access request",
             error:error.message
         })
     }

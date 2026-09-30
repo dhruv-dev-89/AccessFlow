@@ -4,14 +4,29 @@ import { createLogs } from "./auditlogs.controllers.js";
 
 const accessGrant=async (req,res)=>{
     try {
-        const userId=req.user.id;
+        const {accessRequestId,expiresAt}=req.body;
 
-        const {resourceId,accessRequestId,expiresAt}=req.body;
+        const expiryDate=new Date(expiresAt);
+
+        if(isNaN(expiryDate.getTime())){
+            return res.status(400).json({
+                message:"invalid Expiry Date"
+            });
+        }
+
+        if (expiryDate.getTime() <= new Date().getTime()) {
+            return res.status(400).json({
+                message: "Expiry date and time must be in future"
+            });
+        }
 
         const request = await prisma.accessRequest.findFirst({
             where: {
                 id: Number(accessRequestId),
-                status: "APPROVED"
+                status: "APPROVED",
+                resource: {
+                    organizationId: req.user.organizationId
+                }
             }
         });
 
@@ -21,17 +36,29 @@ const accessGrant=async (req,res)=>{
             });
         }
 
+        const existingGrant = await prisma.accessGrant.findUnique({
+            where: {
+                accessRequestId: Number(accessRequestId)
+            }
+        });
+
+        if (existingGrant) {
+            return res.status(400).json({
+                message: "Access has already been granted for this request"
+            });
+        }
+
         const accessGranted=await prisma.accessGrant.create({
             data:{
-                userId: Number(userId),
-                resourceId: Number(resourceId),
+                userId: request.requestedById,
+                resourceId:  request.resourceId,
                 accessRequestId: Number(accessRequestId),
-                expiresAt: new Date(expiresAt)
+                expiresAt: expiryDate
             }
         })
 
         await createLogs(
-            userId,
+            request.requestedById,
             "ACCESS_GRANTED",
             accessRequestId,
             request.resourceId
@@ -85,7 +112,7 @@ const getAllAccessGrant=async (req,res)=>{
             }
         });
 
-        res.status(200).json({accessGrant});
+        res.status(200).json({accessgrant});
     } catch (error) {
         res.status(500).json({
             message:"failed to fetch access grant",

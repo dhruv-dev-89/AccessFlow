@@ -12,6 +12,6 @@ router.get("/access-request/:id",authMiddleware,getAccessRequestById);
 
 router.get("/getAllRequestsMadeByUser",authMiddleware,getAllRequestsMadeByUser);
 
-router.delete("/access-request/:id",deleteRequestMadeByUser);
+router.delete("/access-request/:id",authMiddleware,deleteRequestMadeByUser);
 
 export default router

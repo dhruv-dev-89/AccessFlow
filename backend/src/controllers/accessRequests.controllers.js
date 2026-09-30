@@ -2,49 +2,84 @@ import prisma from "../lib/prisma.js";
 import { createLogs } from "./auditlogs.controllers.js";
 
 
-const accessRequest=async (req,res)=>{
+const accessRequest = async (req, res) => {
     try {
-        const userId=req.user.id;
-        const {reason,resourceId}=req.body;
+        const userId = req.user.id;
+        const { reason, resourceId } = req.body;
 
-        const resource=await prisma.resource.findFirst({
-            where:{
-                id:Number(resourceId),
-                organizationId:req.user.organizationId
-            }
-        })
+        const parsedResourceId = Number(resourceId);
 
-        if(!resource){
-            return res.status(404).json({
-                message:"Resource not found"
-            })
+        if (!Number.isInteger(parsedResourceId) || parsedResourceId <= 0) {
+            return res.status(400).json({
+                message: "Invalid resource ID"
+            });
         }
 
-        const accessRequestMade=await prisma.accessRequest.create({
-            data:{
-                reason:reason,
-                requestedById:Number(userId),
-                resourceId:resourceId
-            }
-        })
+        if (!req.user.organizationId) {
+            return res.status(400).json({
+                message: "User must belong to an organization"
+            });
+        }
 
-        if(accessRequestMade){
+        if (!reason || reason.trim().length < 5) {
+            return res.status(400).json({
+                message: "Reason must be at least 5 characters"
+            });
+        }
+
+        const resource = await prisma.resource.findFirst({
+            where: {
+                id: parsedResourceId,
+                organizationId: req.user.organizationId
+            }
+        });
+
+        if (!resource) {
+            return res.status(404).json({
+                message: "Resource not found"
+            });
+        }
+
+        const existingRequest = await prisma.accessRequest.findFirst({
+            where: {
+                requestedById: userId,
+                resourceId: parsedResourceId,
+                status: "PENDING"
+            }
+        });
+
+        if (existingRequest) {
+            return res.status(400).json({
+                message: "You already have a pending request for this resource"
+            });
+        }
+        
+        const accessRequestMade = await prisma.accessRequest.create({
+            data: {
+                reason: reason.trim(),
+                requestedById: Number(userId),
+                resourceId: parsedResourceId
+            }
+        });
+
+        if (accessRequestMade) {
             await createLogs(
                 userId,
                 "ACCESS_REQUESTED",
                 accessRequestMade.id,
-                resourceId
-            )
+                parsedResourceId
+            );
         }
-        
-        res.status(201).json({accessRequestMade})
+
+        res.status(201).json({ accessRequestMade });
+
     } catch (error) {
         res.status(500).json({
-            message:"failed to create access-request",
-            error:error.message
-        })
+            message: "failed to create access-request",
+            error: error.message
+        });
     }
-}
+};
 
 
 const getAllAccessRequests=async (req,res)=>{
