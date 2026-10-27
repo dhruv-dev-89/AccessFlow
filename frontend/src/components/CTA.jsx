@@ -1,5 +1,6 @@
 
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 const CTA = () => {
   return (
@@ -32,17 +33,17 @@ const CTA = () => {
         {/* Buttons */}
         <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
 
-          <button className="group inline-flex items-center justify-center gap-2 rounded-xl bg-[#315FEA] px-7 py-3.5 text-sm font-semibold text-white shadow-md shadow-blue-600/20 transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#254ED1] hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2">
+          <Link to={"/register"} className="group inline-flex items-center justify-center gap-2 rounded-xl bg-[#315FEA] px-7 py-3.5 text-sm font-semibold text-white shadow-md shadow-blue-600/20 transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#254ED1] hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2">
             Get Started
 
             <span className="transition-transform duration-300 group-hover:translate-x-1">
               →
             </span>
-          </button>
+          </Link>
 
-          <button className="rounded-xl border border-slate-300/80 bg-white/80 px-7 py-3.5 text-sm font-semibold text-slate-700 shadow-sm backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-blue-300 hover:bg-white hover:text-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2">
+          <a href='#security' className="rounded-xl border border-slate-300/80 bg-white/80 px-7 py-3.5 text-sm font-semibold text-slate-700 shadow-sm backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-blue-300 hover:bg-white hover:text-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2">
             Explore Security
-          </button>
+          </a>
 
         </div>
 

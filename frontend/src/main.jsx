@@ -4,11 +4,14 @@ import { BrowserRouter } from "react-router-dom";
 
 import "./index.css";
 import App from "./App.jsx";
+import { Tooltip } from "@base-ui/react";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
-      <App />
+      {/* <Tooltip> */}
+        <App />
+      {/* </Tooltip> */}
     </BrowserRouter>
   </StrictMode>
 );

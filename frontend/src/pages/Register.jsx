@@ -1,73 +1,19 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
+import {
+  ShieldCheck,
+  UserRound,
+  Mail,
+  LockKeyhole,
+  Eye,
+  EyeOff,
+  ArrowRight,
+  CheckCircle2,
+} from "lucide-react";
 
-const Icon = ({ name, className = "h-5 w-5" }) => {
-  const common = {
-    fill: "none",
-    stroke: "currentColor",
-    strokeWidth: 1.8,
-    strokeLinecap: "round",
-    strokeLinejoin: "round",
-    viewBox: "0 0 24 24",
-    className,
-    "aria-hidden": true,
-  };
-
-  const paths = {
-    mail: (
-      <>
-        <rect x="3" y="5" width="18" height="14" rx="2" />
-        <path d="m4 7 8 6 8-6" />
-      </>
-    ),
-    lock: (
-      <>
-        <rect x="4" y="10" width="16" height="11" rx="3" />
-        <path d="M8 10V7a4 4 0 0 1 8 0v3" />
-      </>
-    ),
-    eye: (
-      <>
-        <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" />
-        <circle cx="12" cy="12" r="3" />
-      </>
-    ),
-    eyeOff: (
-      <>
-        <path d="m3 3 18 18" />
-        <path d="M10.6 10.6a2 2 0 0 0 2.8 2.8" />
-        <path d="M9.9 5.2A10.8 10.8 0 0 1 12 5c6.5 0 10 7 10 7a12 12 0 0 1-3.1 3.9M6.2 6.2C3.8 7.7 2 12 2 12s3.5 7 10 7c1 0 2-.2 2.9-.5" />
-      </>
-    ),
-    shield: (
-      <>
-        <path d="M12 3 20 7v5c0 5-3.5 7.8-8 9-4.5-1.2-8-4-8-9V7l8-4Z" />
-        <path d="m9 12 2 2 4-4" />
-      </>
-    ),
-    check: <path d="m5 12 4 4L19 6" />,
-    sun: (
-      <>
-        <circle cx="12" cy="12" r="4" />
-        <path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l-1.42-1.42m11.3-11.3 1.42-1.42" />
-      </>
-    ),
-    moon: (
-      <path d="M20.9 13A8.5 8.5 0 0 1 11 3.1 8.5 8.5 0 1 0 20.9 13Z" />
-    ),
-  };
-
-  return <svg {...common}>{paths[name]}</svg>;
-};
-
-const Register = () => {
-  const [dark, setDark] = useState(
-    document.documentElement.classList.contains("dark")
-  );
-
+export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const [form, setForm] = useState({
     name: "",
@@ -76,29 +22,27 @@ const Register = () => {
     confirmPassword: "",
   });
 
-  const changeTheme = () => {
-    const next = !dark;
-    setDark(next);
-    document.documentElement.classList.toggle("dark", next);
-  };
+  const [error, setError] = useState("");
 
-  const handleChange = (e) => {
+  const updateField = (e) => {
     setForm((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
     }));
-
     setError("");
-    setSuccess("");
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setError("");
-    setSuccess("");
 
     if (form.name.trim().length < 2) {
       setError("Please enter your full name.");
+      return;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+      setError("Please enter a valid email address.");
       return;
     }
 
@@ -112,476 +56,299 @@ const Register = () => {
       return;
     }
 
-    // TODO: Connect the registration API here.
-    console.log({
-      name: form.name.trim(),
-      email: form.email.trim(),
-      password: form.password,
-    });
-
-    setSuccess("Details validated. Registration API is not connected yet.");
+    setError("Registration API is not connected yet.");
   };
 
-  const inputClass = `h-[50px] w-full rounded-xl border px-4 text-sm outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 ${
-    dark
-      ? "border-slate-700 bg-[#0B1221] text-white placeholder:text-slate-500"
-      : "border-[#DCE2EF] bg-white text-[#17264A] placeholder:text-slate-400 hover:border-slate-300"
-  }`;
-
-  const labelClass = `mb-2 block text-[13px] font-semibold ${
-    dark ? "text-slate-200" : "text-[#1B2B50]"
-  }`;
-
   return (
-    <main
-      className={`min-h-screen transition-colors duration-300 ${
-        dark ? "bg-[#080D19] text-white" : "bg-[#F3F6FC] text-[#1B2B50]"
-      }`}
-    >
-      {/* Top navigation */}
+    <main className="relative flex min-h-screen items-center justify-center overflow-x-hidden bg-[#E8E9F6] p-3 sm:p-5 lg:h-screen lg:overflow-y-auto lg:p-5">
+      {/* Background glow */}
+      <div className="pointer-events-none fixed inset-0 overflow-hidden">
+        <div className="absolute -left-32 -top-40 h-[400px] w-[400px] rounded-full bg-purple-400/40 blur-[110px]" />
+        <div className="absolute -right-20 top-0 h-[400px] w-[400px] rounded-full bg-blue-300/40 blur-[110px]" />
+        <div className="absolute -bottom-40 left-1/3 h-[400px] w-[400px] rounded-full bg-pink-300/35 blur-[110px]" />
+      </div>
 
-      <header className="mx-auto flex max-w-[1600px] items-center justify-between px-5 py-4 sm:px-8 lg:px-12">
-        <a href="/" className="flex items-center gap-3">
-          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#1B2B50] text-lg font-bold text-white">
-            A
-          </span>
+      {/* Main glass container */}
+      <div className="relative grid w-full max-w-[1000px] gap-1.5 rounded-[26px] border border-white/90 bg-white/60 p-1.5 shadow-[0_25px_75px_-35px_rgba(44,39,94,0.35)] backdrop-blur-2xl lg:grid-cols-[1fr_1fr]">
+        {/* Left visual panel */}
+        <section className="relative hidden overflow-hidden rounded-[21px] bg-gradient-to-br from-[#C4B3F3] via-[#A6B8F7] to-[#E4E8FF] p-7 text-[#1C2148] lg:flex lg:flex-col lg:justify-between xl:p-8">
+          {/* Decorative glow */}
+          <div className="absolute -left-20 top-10 h-60 w-60 rounded-full bg-pink-300/70 blur-[70px]" />
+          <div className="absolute right-0 top-5 h-64 w-64 rounded-full bg-white/70 blur-[75px]" />
+          <div className="absolute bottom-0 right-0 h-64 w-64 rounded-full bg-blue-300/60 blur-[75px]" />
 
-          <span className="text-lg font-bold tracking-tight">
-            AccessFlow
-          </span>
-        </a>
-
-        <div className="flex items-center gap-4">
-          <span
-            className={`hidden text-sm sm:block ${
-              dark ? "text-slate-400" : "text-slate-500"
-            }`}
-          >
-            Already have an account?
-            <a
-              href="/login"
-              className="ml-1.5 font-semibold text-indigo-500 hover:text-indigo-600"
-            >
-              Sign in
-            </a>
-          </span>
-
-          <button
-            type="button"
-            onClick={changeTheme}
-            aria-label={`Switch to ${dark ? "light" : "dark"} mode`}
-            className={`flex h-10 w-10 items-center justify-center rounded-xl border ${
-              dark
-                ? "border-slate-700 text-slate-300 hover:bg-slate-800"
-                : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
-            }`}
-          >
-            <Icon name={dark ? "sun" : "moon"} />
-          </button>
-        </div>
-      </header>
-
-      {/* Main content */}
-
-      <section className="mx-auto grid w-full max-w-[1600px] items-center gap-8 px-5 pb-8 pt-5 sm:px-8 lg:min-h-[calc(100vh-140px)] lg:grid-cols-[1fr_1fr] lg:gap-12 lg:px-12 lg:py-8 xl:gap-20">
-
-        {/* LEFT: Distinct security visual */}
-
-        <div className="relative hidden min-h-[590px] overflow-hidden rounded-[30px] bg-[#010736] p-8 text-white lg:flex lg:flex-col lg:justify-between xl:p-10">
-
-          {/* Background decoration */}
-
-          <div
-            className="pointer-events-none absolute inset-0 opacity-25"
-            style={{
-              backgroundImage:
-                "radial-gradient(rgba(153,180,255,0.8) 1px, transparent 1px)",
-              backgroundSize: "23px 23px",
-            }}
-          />
-
-          <div className="pointer-events-none absolute -right-28 -top-28 h-80 w-80 rounded-full bg-indigo-500/25 blur-3xl" />
-
-          <div className="pointer-events-none absolute -bottom-32 -left-20 h-80 w-80 rounded-full bg-blue-500/20 blur-3xl" />
-
-          <div className="relative z-10">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-200">
-                The AccessFlow approach
-              </span>
-
-              <span className="flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] px-3 py-1.5 text-[10px] font-medium text-blue-100">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-                ACCESS CONTROL
-              </span>
+          {/* Branding */}
+          <div className="relative z-10 flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/70 bg-white/50 shadow-sm backdrop-blur-xl">
+              <ShieldCheck size={22} />
             </div>
 
-            <h1 className="mt-8 text-4xl font-bold leading-[1.12] tracking-[-0.045em] xl:text-[54px]">
-              Access when you
-              <br />
-              need it.
-              <br />
-              <span className="text-[#AEBEFF]">
-                Gone when you don't.
-              </span>
-            </h1>
-
-            <p className="mt-5 max-w-md text-sm leading-7 text-slate-300">
-              Give the right people access to the right resources,
-              for only as long as they need it.
-            </p>
-          </div>
-
-          {/* Custom access-management visualization */}
-
-          <div className="relative z-10 mx-auto my-8 w-full max-w-[470px]">
-            {/* Connector lines */}
-
-            <div className="absolute left-8 top-12 h-[155px] w-px bg-gradient-to-b from-indigo-300/70 via-indigo-300/30 to-transparent" />
-
-            {/* Request event */}
-
-            <div className="relative flex items-center gap-4">
-              <div className="z-10 flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-indigo-300/30 bg-[#1D2B52] text-indigo-200 shadow-lg">
-                <Icon name="shield" className="h-7 w-7" />
-              </div>
-
-              <div className="min-w-0 flex-1 rounded-2xl border border-white/10 bg-white/[0.06] p-4 backdrop-blur-sm">
-                <div className="flex items-center justify-between gap-2">
-                  <span className="text-sm font-semibold">
-                    Access request
-                  </span>
-
-                  <span className="rounded-full bg-amber-300/10 px-2.5 py-1 text-[10px] font-semibold text-amber-200">
-                    Pending
-                  </span>
-                </div>
-
-                <p className="mt-1.5 text-xs text-slate-400">
-                  Production database · Read-only
-                </p>
-              </div>
-            </div>
-
-            {/* Approval event */}
-
-            <div className="relative mt-5 flex items-center gap-4">
-              <div className="z-10 flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-emerald-300/20 bg-[#18374A] text-emerald-300">
-                <Icon name="check" className="h-7 w-7" />
-              </div>
-
-              <div className="min-w-0 flex-1 rounded-2xl border border-emerald-300/20 bg-emerald-300/[0.06] p-4">
-                <div className="flex items-center justify-between gap-2">
-                  <span className="text-sm font-semibold">
-                    Approval granted
-                  </span>
-
-                  <span className="rounded-full bg-emerald-300/10 px-2.5 py-1 text-[10px] font-semibold text-emerald-200">
-                    Approved
-                  </span>
-                </div>
-
-                <p className="mt-1.5 text-xs text-slate-400">
-                  Permission granted for a limited period
-                </p>
-              </div>
-            </div>
-
-            {/* Expiry event */}
-
-            <div className="relative mt-5 flex items-center gap-4">
-              <div className="z-10 flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-indigo-300/20 bg-[#252B58] text-indigo-200">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  className="h-7 w-7"
-                >
-                  <circle cx="12" cy="12" r="9" />
-                  <path d="M12 7v5l3 2" />
-                </svg>
-              </div>
-
-              <div className="min-w-0 flex-1 rounded-2xl border border-white/10 bg-white/[0.06] p-4">
-                <div className="flex items-center justify-between gap-2">
-                  <span className="text-sm font-semibold">
-                    Automatic expiry
-                  </span>
-
-                  <Icon
-                    name="check"
-                    className="h-4 w-4 text-emerald-300"
-                  />
-                </div>
-
-                <p className="mt-1.5 text-xs text-slate-400">
-                  Access ends when its approved window expires
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Bottom value statement */}
-
-          <div className="relative z-10 flex items-center justify-between gap-4 border-t border-white/10 pt-5">
             <div>
-              <p className="text-sm font-semibold">
-                Request. Approve. Expire.
+              <p className="text-base font-bold tracking-tight">
+                AccessFlow
               </p>
-
-              <p className="mt-1 text-xs text-slate-400">
-                Access by need, not by default.
+              <p className="text-[8px] font-semibold tracking-[0.2em] text-[#454C78]">
+                ACCESS MANAGEMENT
               </p>
-            </div>
-
-            <div className="flex -space-x-2">
-              <span className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-[#101D3C] bg-indigo-300 text-xs font-bold text-[#18264A]">
-                R
-              </span>
-              <span className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-[#101D3C] bg-sky-200 text-xs font-bold text-[#18264A]">
-                A
-              </span>
-              <span className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-[#101D3C] bg-emerald-200 text-xs font-bold text-[#18264A]">
-                G
-              </span>
             </div>
           </div>
-        </div>
 
-        {/* RIGHT: Registration form */}
+          {/* Orb visual */}
+          <div className="relative z-10 my-4">
+            <div className="relative flex h-[220px] items-center justify-center">
+              <div className="absolute bottom-7 h-8 w-44 rounded-full bg-indigo-900/20 blur-2xl" />
 
-        <div className="mx-auto w-full max-w-[540px] lg:ml-auto">
-          {/* Mobile brand introduction */}
+              <div className="absolute h-52 w-52 rounded-full border border-white/50" />
+              <div className="absolute h-40 w-40 rounded-full border border-white/60" />
 
-          <div className="mb-7 lg:hidden">
-            <span className="text-xs font-semibold uppercase tracking-[0.18em] text-indigo-500">
-              TEMPORARY ACCESS MANAGEMENT
-            </span>
+              <div className="relative flex h-32 w-32 items-center justify-center rounded-full border border-white/80 bg-gradient-to-br from-white via-[#D9CBFF] to-[#8588F1] shadow-[inset_-12px_-15px_30px_rgba(86,72,180,0.3),inset_8px_8px_24px_rgba(255,255,255,0.9),0_20px_55px_rgba(74,66,180,0.35)]">
+                <div className="absolute left-5 top-4 h-6 w-16 rotate-[-35deg] rounded-full bg-white/80 blur-md" />
 
-            <h1 className="mt-4 text-3xl font-bold leading-tight tracking-tight">
-              Your access.
+                <ShieldCheck
+                  size={48}
+                  strokeWidth={1.3}
+                  className="relative text-[#353A85]"
+                />
+
+                <div className="absolute -right-2 top-5 flex h-8 w-8 items-center justify-center rounded-lg border border-white/80 bg-white/75 text-indigo-700 shadow-lg">
+                  <CheckCircle2 size={17} />
+                </div>
+
+                <div className="absolute -bottom-1 -left-3 flex h-9 w-9 items-center justify-center rounded-lg border border-white/80 bg-white/75 text-indigo-700 shadow-lg">
+                  <LockKeyhole size={17} />
+                </div>
+              </div>
+
+              {/* Floating labels */}
+              <div className="absolute left-0 top-8 rounded-xl border border-white/70 bg-white/50 px-3 py-2 shadow-lg backdrop-blur-xl">
+                <p className="text-[9px] text-slate-600">Access status</p>
+                <p className="mt-0.5 text-xs font-bold text-[#262A5D]">
+                  Protected
+                </p>
+              </div>
+
+              <div className="absolute bottom-5 right-0 rounded-xl border border-white/70 bg-white/55 px-3 py-2 shadow-lg backdrop-blur-xl">
+                <p className="text-[9px] text-slate-600">Permissions</p>
+                <p className="mt-0.5 text-xs font-bold text-[#262A5D]">
+                  Time-bound access
+                </p>
+              </div>
+            </div>
+
+            <h1 className="mt-2 text-3xl font-bold leading-tight tracking-[-0.04em] xl:text-[38px]">
+              SMART ACCESS.
               <br />
-              <span className="text-indigo-500">Your control.</span>
+              <span className="text-white drop-shadow-sm">
+                ZERO COMPLEXITY.
+              </span>
             </h1>
 
-            <p
-              className={`mt-3 text-sm leading-6 ${
-                dark ? "text-slate-400" : "text-slate-500"
-              }`}
-            >
-              Create your account and get started with controlled,
-              time-bound access.
+            <p className="mt-3 max-w-sm text-xs leading-6 text-[#454C78] xl:text-sm">
+              Simplify permissions, streamline approvals, and keep your
+              organization's resources protected with AccessFlow.
             </p>
           </div>
 
-          <div
-            className={`rounded-[26px] border p-6 sm:p-8 xl:p-9 ${
-              dark
-                ? "border-slate-800 bg-[#10182A] shadow-2xl shadow-black/20"
-                : "border-[#E7EBF4] bg-white shadow-[0_24px_80px_-35px_rgba(28,48,92,0.24)]"
-            }`}
-          >
-            <div className="mb-7">
-              <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-indigo-500">
-                <span className="h-px w-5 bg-indigo-500" />
-                CREATE ACCOUNT
+          {/* Bottom features */}
+          <div className="relative z-10 flex flex-wrap gap-2">
+            {["Secure access", "Quick approvals", "Auto expiry"].map(
+              (feature) => (
+                <span
+                  key={feature}
+                  className="flex items-center gap-1.5 rounded-full border border-white/70 bg-white/45 px-2.5 py-1.5 text-[10px] font-medium text-[#343A70] backdrop-blur-lg"
+                >
+                  <CheckCircle2 size={12} />
+                  {feature}
+                </span>
+              )
+            )}
+          </div>
+        </section>
+
+        {/* Right registration panel */}
+        <section className="flex items-center justify-center rounded-[21px] bg-white/70 px-5 py-6 sm:px-8 lg:px-8 lg:py-5 xl:px-10">
+          <div className="w-full max-w-[370px]">
+            {/* Mobile branding */}
+            <div className="mb-5 flex items-center gap-3 lg:hidden">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#363199] text-white shadow-lg">
+                <ShieldCheck size={22} />
               </div>
-
-              <h2
-                className={`mt-4 text-3xl font-bold tracking-[-0.04em] ${
-                  dark ? "text-white" : "text-[#17264A]"
-                }`}
-              >
-                Get started<span className="text-indigo-500">.</span>
-              </h2>
-
-              <p
-                className={`mt-2 text-sm leading-6 ${
-                  dark ? "text-slate-400" : "text-slate-500"
-                }`}
-              >
-                Set up your account in just a few steps.
-              </p>
-            </div>
-
-            <form onSubmit={handleSubmit} className="space-y-5">
-              {/* Full name */}
 
               <div>
-                <label htmlFor="reg-name" className={labelClass}>
+                <p className="text-base font-bold text-[#25264E]">
+                  AccessFlow
+                </p>
+                <p className="text-[8px] tracking-[0.2em] text-slate-500">
+                  ACCESS MANAGEMENT
+                </p>
+              </div>
+            </div>
+
+            {/* Heading */}
+            <div className="mb-5">
+              <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-xl border border-white bg-white/90 text-[#363199] shadow-md">
+                <UserRound size={18} />
+              </div>
+
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#7770C8]">
+                Create your account
+              </p>
+
+              <h2 className="mt-1.5 text-2xl font-bold tracking-tight text-[#202344] sm:text-[30px]">
+                Join AccessFlow
+              </h2>
+
+              <p className="mt-1.5 text-xs leading-5 text-slate-500 sm:text-sm">
+                Create your account to get started.
+              </p>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-3">
+              {/* Full name */}
+              <div>
+                <label
+                  htmlFor="register-name"
+                  className="mb-1.5 block text-xs font-medium text-[#383956]"
+                >
                   Full name
                 </label>
 
-                <input
-                  id="reg-name"
-                  name="name"
-                  type="text"
-                  autoComplete="name"
-                  placeholder="Enter your full name"
-                  value={form.name}
-                  onChange={handleChange}
-                  required
-                  minLength={2}
-                  className={inputClass}
-                />
+                <div className="relative">
+                  <UserRound
+                    size={16}
+                    className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+                  />
+
+                  <input
+                    id="register-name"
+                    name="name"
+                    type="text"
+                    autoComplete="name"
+                    placeholder="Enter your full name"
+                    value={form.name}
+                    onChange={updateField}
+                    required
+                    minLength={2}
+                    className="h-10 w-full rounded-xl border border-white bg-white/75 pl-10 pr-3 text-xs text-[#242647] shadow-sm outline-none transition placeholder:text-slate-400 hover:border-indigo-200 focus:border-[#7770C8] focus:bg-white focus:ring-4 focus:ring-indigo-100/70 sm:text-sm"
+                  />
+                </div>
               </div>
 
               {/* Email */}
-
               <div>
-                <label htmlFor="reg-email" className={labelClass}>
+                <label
+                  htmlFor="register-email"
+                  className="mb-1.5 block text-xs font-medium text-[#383956]"
+                >
                   Work email
                 </label>
 
                 <div className="relative">
-                  <span
-                    className={`absolute left-4 top-1/2 -translate-y-1/2 ${
-                      dark ? "text-slate-500" : "text-slate-400"
-                    }`}
-                  >
-                    <Icon name="mail" />
-                  </span>
+                  <Mail
+                    size={16}
+                    className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+                  />
 
                   <input
-                    id="reg-email"
+                    id="register-email"
                     name="email"
                     type="email"
                     autoComplete="email"
                     placeholder="you@company.com"
                     value={form.email}
-                    onChange={handleChange}
+                    onChange={updateField}
                     required
-                    className={`${inputClass} pl-12`}
+                    className="h-10 w-full rounded-xl border border-white bg-white/75 pl-10 pr-3 text-xs text-[#242647] shadow-sm outline-none transition placeholder:text-slate-400 hover:border-indigo-200 focus:border-[#7770C8] focus:bg-white focus:ring-4 focus:ring-indigo-100/70 sm:text-sm"
                   />
                 </div>
               </div>
 
               {/* Password */}
-
               <div>
-                <label htmlFor="reg-password" className={labelClass}>
+                <label
+                  htmlFor="register-password"
+                  className="mb-1.5 block text-xs font-medium text-[#383956]"
+                >
                   Password
                 </label>
 
                 <div className="relative">
-                  <span
-                    className={`absolute left-4 top-1/2 -translate-y-1/2 ${
-                      dark ? "text-slate-500" : "text-slate-400"
-                    }`}
-                  >
-                    <Icon name="lock" />
-                  </span>
+                  <LockKeyhole
+                    size={16}
+                    className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+                  />
 
                   <input
-                    id="reg-password"
+                    id="register-password"
                     name="password"
-                    type={showPassword ? "text" : "password"}
+                    type={showPassword ? "password":"text" }
                     autoComplete="new-password"
-                    placeholder="Create a strong password"
+                    placeholder="At least 8 characters"
                     value={form.password}
-                    onChange={handleChange}
-                    minLength={8}
+                    onChange={updateField}
                     required
-                    className={`${inputClass} pl-12 pr-12`}
+                    minLength={8}
+                    className="h-10 w-full rounded-xl border border-white bg-white/75 pl-10 pr-10 text-xs text-[#242647] shadow-sm outline-none transition placeholder:text-slate-400 hover:border-indigo-200 focus:border-[#7770C8] focus:bg-white focus:ring-4 focus:ring-indigo-100/70 sm:text-sm"
                   />
 
                   <button
                     type="button"
                     onClick={() => setShowPassword((prev) => !prev)}
                     aria-label={showPassword ? "Hide password" : "Show password"}
-                    className={`absolute right-2 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-lg ${
-                      dark
-                        ? "text-slate-400 hover:bg-slate-800"
-                        : "text-slate-500 hover:bg-slate-100"
-                    }`}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-lg p-1.5 text-slate-400 transition hover:bg-indigo-50 hover:text-indigo-700"
                   >
-                    <Icon name={showPassword ? "eye" : "eyeOff"} />
+                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
                 </div>
 
-                <div className="mt-2 flex items-center justify-between gap-3">
-                  <p
-                    className={`text-xs ${
-                      dark ? "text-slate-500" : "text-slate-400"
-                    }`}
-                  >
-                    Use at least 8 characters.
-                  </p>
-
-                  {form.password && (
-                    <span
-                      className={`text-xs font-medium ${
-                        form.password.length >= 8
-                          ? "text-emerald-500"
-                          : "text-amber-500"
-                      }`}
-                    >
-                      {form.password.length >= 8
-                        ? "Length OK"
-                        : `${form.password.length}/8 characters`}
-                    </span>
-                  )}
-                </div>
+                <p className="mt-1 text-[10px] text-slate-400">
+                  Use at least 8 characters.
+                </p>
               </div>
 
               {/* Confirm password */}
-
               <div>
-                <label htmlFor="reg-confirm" className={labelClass}>
+                <label
+                  htmlFor="register-confirm"
+                  className="mb-1.5 block text-xs font-medium text-[#383956]"
+                >
                   Confirm password
                 </label>
 
                 <div className="relative">
-                  <span
-                    className={`absolute left-4 top-1/2 -translate-y-1/2 ${
-                      dark ? "text-slate-500" : "text-slate-400"
-                    }`}
-                  >
-                    <Icon name="lock" />
-                  </span>
+                  <LockKeyhole
+                    size={16}
+                    className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+                  />
 
                   <input
-                    id="reg-confirm"
+                    id="register-confirm"
                     name="confirmPassword"
-                    type={showConfirmPassword ? "text" : "password"}
+                    type={showConfirm ? "password":"text"}
                     autoComplete="new-password"
                     placeholder="Re-enter your password"
                     value={form.confirmPassword}
-                    onChange={handleChange}
-                    minLength={8}
+                    onChange={updateField}
                     required
-                    className={`${inputClass} pl-12 pr-12`}
+                    className="h-10 w-full rounded-xl border border-white bg-white/75 pl-10 pr-10 text-xs text-[#242647] shadow-sm outline-none transition placeholder:text-slate-400 hover:border-indigo-200 focus:border-[#7770C8] focus:bg-white focus:ring-4 focus:ring-indigo-100/70 sm:text-sm"
                   />
 
                   <button
                     type="button"
-                    onClick={() =>
-                      setShowConfirmPassword((prev) => !prev)
-                    }
-                    aria-label={
-                      showConfirmPassword
-                        ? "Hide confirm password"
-                        : "Show confirm password"
-                    }
-                    className={`absolute right-2 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-lg ${
-                      dark
-                        ? "text-slate-400 hover:bg-slate-800"
-                        : "text-slate-500 hover:bg-slate-100"
-                    }`}
+                    onClick={() => setShowConfirm((prev) => !prev)}
+                    aria-label={showConfirm ? "Hide password" : "Show password"}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-lg p-1.5 text-slate-400 transition hover:bg-indigo-50 hover:text-indigo-700"
                   >
-                    <Icon
-                      name={showConfirmPassword ? "eye" : "eyeOff"}
-                    />
+                    {showConfirm ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
                 </div>
 
                 {form.confirmPassword && (
                   <p
-                    className={`mt-2 text-xs ${
+                    className={`mt-1 text-[10px] ${
                       form.password === form.confirmPassword
-                        ? "text-emerald-500"
-                        : "text-amber-500"
+                        ? "text-emerald-600"
+                        : "text-rose-500"
                     }`}
                   >
                     {form.password === form.confirmPassword
@@ -591,86 +358,49 @@ const Register = () => {
                 )}
               </div>
 
-              {/* Messages */}
-
+              {/* Error message */}
               {error && (
                 <p
                   role="alert"
-                  className="rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-500"
+                  className="rounded-lg border border-rose-100 bg-rose-50 px-3 py-2 text-xs text-rose-600"
                 >
                   {error}
                 </p>
               )}
 
-              {success && (
-                <p
-                  role="status"
-                  className="rounded-xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-500"
-                >
-                  {success}
-                </p>
-              )}
-
-              {/* Submit */}
-
+              {/* Submit button */}
               <button
                 type="submit"
-                className="group flex h-[52px] w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#4167F5] to-[#5140E9] text-sm font-semibold text-white shadow-[0_10px_28px_rgba(67,83,235,0.22)] transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_15px_32px_rgba(67,83,235,0.32)] active:translate-y-0"
+                className="group flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#7164D8] to-[#5143B8] text-sm font-semibold text-white shadow-[0_8px_20px_rgba(91,76,190,0.22)] transition duration-200 hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0"
               >
                 Create account
-
-                <span className="transition-transform group-hover:translate-x-1">
-                  →
-                </span>
+                <ArrowRight
+                  size={16}
+                  className="transition-transform group-hover:translate-x-1"
+                />
               </button>
             </form>
 
             {/* Sign in */}
-
-            <div
-              className={`mt-6 border-t pt-5 text-center text-sm ${
-                dark
-                  ? "border-slate-800 text-slate-400"
-                  : "border-slate-100 text-slate-500"
-              }`}
-            >
-              Already have an account?{" "}
-              <a
-                href="/login"
-                className="font-semibold text-indigo-500 hover:text-indigo-600"
-              >
-                Sign in
-              </a>
+            <div className="mt-4 border-t border-indigo-100/70 pt-4 text-center">
+              <p className="text-xs text-slate-500 sm:text-sm">
+                Already have an account?{" "}
+                <Link
+                  to="/login"
+                  className="font-semibold text-[#6255C4] transition hover:text-[#363199]"
+                >
+                  Sign in
+                </Link>
+              </p>
             </div>
 
-            {/* Trust footer */}
-
-            <div
-              className={`mt-5 flex items-center justify-center gap-2 text-xs ${
-                dark ? "text-slate-500" : "text-slate-400"
-              }`}
-            >
-              <Icon name="shield" className="h-4 w-4" />
+            <div className="mt-3 flex items-center justify-center gap-1.5 text-[10px] text-slate-400">
+              <ShieldCheck size={13} />
               Your access. Your control.
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* Footer */}
-
-      <footer
-        className={`mx-auto flex max-w-[1600px] flex-wrap items-center justify-between gap-3 border-t px-5 py-4 text-xs sm:px-8 lg:px-12 ${
-          dark
-            ? "border-slate-800 text-slate-500"
-            : "border-slate-200 text-slate-400"
-        }`}
-      >
-        <span>© {new Date().getFullYear()} AccessFlow</span>
-        <span>Access by need, not by default.</span>
-      </footer>
+        </section>
+      </div>
     </main>
   );
-};
-
-export default Register;
+}

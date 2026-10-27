@@ -1,302 +1,211 @@
-
 import { useState } from "react";
+import { Link } from "react-router-dom";
+import {
+  ShieldCheck,
+  Mail,
+  LockKeyhole,
+  Eye,
+  EyeOff,
+  ArrowRight,
+  CheckCircle2,
+} from "lucide-react";
 
-const Login = () => {
-  const [dark, setDark] = useState(
-    document.documentElement.classList.contains("dark")
-  );
-
+export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
-  const [keepSignedIn, setKeepSignedIn] = useState(false);
-  const [error, setError] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
 
   const [form, setForm] = useState({
     email: "",
     password: "",
   });
 
-  const handleChange = (e) => {
+  const [error, setError] = useState("");
+
+  const updateField = (e) => {
     setForm((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
     }));
-    setError("");
-  };
 
-  const toggleTheme = () => {
-    const nextTheme = !dark;
-    setDark(nextTheme);
-    document.documentElement.classList.toggle("dark", nextTheme);
+    setError("");
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setError("");
 
-    if (!form.email.trim() || !form.password) {
-      setError("Please enter your email and password.");
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+      setError("Please enter a valid email address.");
       return;
     }
 
-    setError("");
+    if (!form.password) {
+      setError("Please enter your password.");
+      return;
+    }
 
-    // Login API integration will be added here.
-    console.log({
-      email: form.email,
-      password: form.password,
-      keepSignedIn,
-    });
+    setError("Login API is not connected yet.");
   };
 
   return (
-    <main
-      className={`min-h-screen transition-colors duration-300 ${
-        dark ? "bg-[#080C17]" : "bg-[#F4F6FC]"
-      }`}
-    >
-      <div className="mx-auto grid min-h-screen max-w-[1800px] grid-cols-1 items-center gap-8 p-4 sm:p-6 lg:grid-cols-[1.15fr_0.85fr] lg:gap-6 lg:p-5 xl:gap-20 xl:p-8">
+    <main className="relative flex min-h-screen items-center justify-center overflow-x-hidden bg-[#E8E9F6] p-3 sm:p-5 lg:h-screen lg:overflow-y-auto lg:p-5">
+      {/* Background glow */}
+      <div className="pointer-events-none fixed inset-0 overflow-hidden">
+        <div className="absolute -left-32 -top-40 h-[400px] w-[400px] rounded-full bg-purple-400/40 blur-[110px]" />
+        <div className="absolute -right-20 top-0 h-[400px] w-[400px] rounded-full bg-blue-300/40 blur-[110px]" />
+        <div className="absolute -bottom-40 left-1/3 h-[400px] w-[400px] rounded-full bg-pink-300/35 blur-[110px]" />
+      </div>
 
-        {/* LEFT BRANDING PANEL */}
+      {/* Main glass container */}
+      <div className="relative grid w-full max-w-[1000px] gap-1.5 rounded-[26px] border border-white/90 bg-white/60 p-1.5 shadow-[0_25px_75px_-35px_rgba(44,39,94,0.35)] backdrop-blur-2xl lg:grid-cols-[1fr_1fr]">
+        {/* Left visual panel */}
+        <section className="relative hidden overflow-hidden rounded-[21px] bg-gradient-to-br from-[#C4B3F3] via-[#A6B8F7] to-[#E4E8FF] p-7 text-[#1C2148] lg:flex lg:flex-col lg:justify-between xl:p-8">
+          {/* Decorative glow */}
+          <div className="absolute -left-20 top-10 h-60 w-60 rounded-full bg-pink-300/70 blur-[70px]" />
+          <div className="absolute right-0 top-5 h-64 w-64 rounded-full bg-white/70 blur-[75px]" />
+          <div className="absolute bottom-0 right-0 h-64 w-64 rounded-full bg-blue-300/60 blur-[75px]" />
 
-        <section className="relative hidden min-h-[calc(100vh-64px)] overflow-hidden rounded-[32px] border border-white/15 bg-gradient-to-br from-[#253A91] via-[#3C38A0] to-[#36258B] p-10 text-white sm:p-12 lg:flex lg:flex-col lg:justify-between xl:p-14">
-
-          <div
-            className="pointer-events-none absolute inset-0 opacity-30"
-            style={{
-              backgroundImage:
-                "radial-gradient(rgba(255,255,255,0.4) 1px, transparent 1px)",
-              backgroundSize: "24px 24px",
-            }}
-          />
-
-          <div className="pointer-events-none absolute -right-28 top-20 h-80 w-80 rounded-full bg-violet-400/20 blur-3xl" />
-
-          <div className="pointer-events-none absolute -bottom-28 -left-20 h-96 w-96 rounded-full bg-blue-400/20 blur-3xl" />
-
-          {/* Logo */}
-
-          <div className="relative z-10 flex items-center justify-between gap-4">
-            <a href="/" className="flex items-center gap-3">
-              <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-white text-lg font-bold text-[#171B2D]">
-                A
-              </span>
-
-              <span className="text-xl font-bold tracking-tight">
-                AccessFlow
-              </span>
-            </a>
-
-            <span className="rounded-full border border-white/25 bg-white/10 px-4 py-2 text-[11px] font-bold tracking-[0.12em]">
-              TEMPORARY ACCESS
-            </span>
-          </div>
-
-          {/* Hero Content */}
-
-          <div className="relative z-10 my-12 max-w-2xl">
-            <h1 className="text-5xl font-bold leading-[1.12] tracking-[-0.045em] xl:text-6xl">
-              Access when you
-              <br />
-              need it.
-              <br />
-
-              <span className="text-[#C9D3FF]">
-                Gone when you don't.
-              </span>
-            </h1>
-
-            <p className="mt-6 max-w-lg text-base leading-7 text-white/85 xl:text-lg">
-              A controlled way to request, approve, grant and revoke
-              temporary access to critical resources.
-            </p>
-
-            {/* Access Preview */}
-
-            <div className="mt-9 max-w-[490px] rounded-[24px] border border-white/30 bg-white/10 p-5 backdrop-blur-md sm:p-6">
-              <div className="flex items-center justify-between gap-4">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20">
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.8"
-                      className="h-6 w-6"
-                    >
-                      <ellipse cx="12" cy="5" rx="8" ry="3" />
-                      <path d="M4 5v7c0 1.7 3.6 3 8 3s8-1.3 8-3V5" />
-                      <path d="M4 12v7c0 1.7 3.6 3 8 3s8-1.3 8-3v-7" />
-                    </svg>
-                  </div>
-
-                  <div>
-                    <p className="text-sm font-bold">
-                      Production database
-                    </p>
-                    <p className="mt-1 text-xs text-white/75">
-                      Read-only access
-                    </p>
-                  </div>
-                </div>
-
-                <span className="rounded-full bg-white px-3 py-2 text-xs font-bold text-[#263B9A]">
-                  Approved
-                </span>
-              </div>
-
-              <div className="mt-5 h-2 overflow-hidden rounded-full bg-white/25">
-                <div className="h-full w-[62%] rounded-full bg-white" />
-              </div>
-
-              <div className="mt-3 flex items-center justify-between gap-3 text-xs text-white/90">
-                <span>Auto-expiry</span>
-                <span>Expires in 1h 12m</span>
-              </div>
+          {/* Branding */}
+          <div className="relative z-10 flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/70 bg-white/50 shadow-sm backdrop-blur-xl">
+              <ShieldCheck size={22} />
             </div>
 
-            {/* Revoked Access */}
+            <div>
+              <p className="text-base font-bold tracking-tight">
+                AccessFlow
+              </p>
+              <p className="text-[8px] font-semibold tracking-[0.2em] text-[#454C78]">
+                ACCESS MANAGEMENT
+              </p>
+            </div>
+          </div>
 
-            <div className="ml-auto mt-[-2px] flex w-fit items-center gap-3 rounded-2xl bg-white px-4 py-3 text-[#111827] shadow-xl sm:mr-8">
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.2"
-                  className="h-5 w-5"
-                >
-                  <path d="m5 12 4 4L19 6" />
-                </svg>
-              </span>
+          {/* Orb visual */}
+          <div className="relative z-10 my-4">
+            <div className="relative flex h-[220px] items-center justify-center">
+              <div className="absolute bottom-7 h-8 w-44 rounded-full bg-indigo-900/20 blur-2xl" />
 
-              <div>
-                <p className="text-sm font-bold">Access revoked</p>
-                <p className="mt-1 text-xs text-slate-500">
-                  Logged in audit trail
+              <div className="absolute h-52 w-52 rounded-full border border-white/50" />
+              <div className="absolute h-40 w-40 rounded-full border border-white/60" />
+
+              <div className="relative flex h-32 w-32 items-center justify-center rounded-full border border-white/80 bg-gradient-to-br from-white via-[#D9CBFF] to-[#8588F1] shadow-[inset_-12px_-15px_30px_rgba(86,72,180,0.3),inset_8px_8px_24px_rgba(255,255,255,0.9),0_20px_55px_rgba(74,66,180,0.35)]">
+                <div className="absolute left-5 top-4 h-6 w-16 rotate-[-35deg] rounded-full bg-white/80 blur-md" />
+
+                <ShieldCheck
+                  size={48}
+                  strokeWidth={1.3}
+                  className="relative text-[#353A85]"
+                />
+
+                <div className="absolute -right-2 top-5 flex h-8 w-8 items-center justify-center rounded-lg border border-white/80 bg-white/75 text-indigo-700 shadow-lg">
+                  <CheckCircle2 size={17} />
+                </div>
+
+                <div className="absolute -bottom-1 -left-3 flex h-9 w-9 items-center justify-center rounded-lg border border-white/80 bg-white/75 text-indigo-700 shadow-lg">
+                  <LockKeyhole size={17} />
+                </div>
+              </div>
+
+              {/* Floating labels */}
+              <div className="absolute left-0 top-8 rounded-xl border border-white/70 bg-white/50 px-3 py-2 shadow-lg backdrop-blur-xl">
+                <p className="text-[9px] text-slate-600">Account status</p>
+                <p className="mt-0.5 text-xs font-bold text-[#262A5D]">
+                  Protected
+                </p>
+              </div>
+
+              <div className="absolute bottom-5 right-0 rounded-xl border border-white/70 bg-white/55 px-3 py-2 shadow-lg backdrop-blur-xl">
+                <p className="text-[9px] text-slate-600">Your workspace</p>
+                <p className="mt-0.5 text-xs font-bold text-[#262A5D]">
+                  Secure access
                 </p>
               </div>
             </div>
+
+            <h1 className="mt-2 text-3xl font-bold leading-tight tracking-[-0.04em] xl:text-[38px]">
+              WELCOME BACK.
+              <br />
+              <span className="text-white drop-shadow-sm">
+                ACCESS WITH CONFIDENCE.
+              </span>
+            </h1>
+
+            <p className="mt-3 max-w-sm text-xs leading-6 text-[#454C78] xl:text-sm">
+              Your workspace for secure permissions, transparent approvals,
+              and controlled resource access.
+            </p>
           </div>
 
-          {/* Workflow */}
-
-          <div className="relative z-10 flex flex-wrap items-center gap-3 text-sm font-semibold">
-            <span>Request</span>
-            <span className="h-px w-6 bg-white/40" />
-            <span>Approve</span>
-            <span className="h-px w-6 bg-white/40" />
-            <span>Grant</span>
-            <span className="h-px w-6 bg-white/40" />
-
-            <span className="rounded-full bg-white px-4 py-2 text-[#283A97]">
-              Revoke
-            </span>
+          {/* Bottom features */}
+          <div className="relative z-10 flex flex-wrap gap-2">
+            {["Secure login", "Access control", "Your workspace"].map(
+              (feature) => (
+                <span
+                  key={feature}
+                  className="flex items-center gap-1.5 rounded-full border border-white/70 bg-white/45 px-2.5 py-1.5 text-[10px] font-medium text-[#343A70] backdrop-blur-lg"
+                >
+                  <CheckCircle2 size={12} />
+                  {feature}
+                </span>
+              )
+            )}
           </div>
         </section>
 
-        {/* RIGHT LOGIN FORM */}
+        {/* Right login panel */}
+        <section className="flex items-center justify-center rounded-[21px] bg-white/70 px-5 py-8 sm:px-8 lg:px-8 lg:py-5 xl:px-10">
+          <div className="w-full max-w-[370px]">
+            {/* Mobile branding */}
+            <div className="mb-5 flex items-center gap-3 lg:hidden">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#363199] text-white shadow-lg">
+                <ShieldCheck size={22} />
+              </div>
 
-        <section className="flex items-center justify-center py-6 lg:py-12">
-          <div
-            className={`w-full max-w-[470px] rounded-[30px] border p-6 shadow-2xl transition-colors duration-300 sm:p-9 xl:p-10 ${
-              dark
-                ? "border-[#263148] bg-[#10182A] shadow-black/20"
-                : "border-white bg-white shadow-slate-200/70"
-            }`}
-          >
-            {/* Mobile Branding + Theme */}
-
-            <div className="mb-8 flex items-center justify-between gap-3">
-              <a href="/" className="flex items-center gap-2 lg:hidden">
-                <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-[#4166F5] to-[#5141E8] font-bold text-white">
-                  A
-                </span>
-
-                <span
-                  className={`font-bold ${
-                    dark ? "text-white" : "text-[#111827]"
-                  }`}
-                >
+              <div>
+                <p className="text-base font-bold text-[#25264E]">
                   AccessFlow
-                </span>
-              </a>
-
-              <button
-                type="button"
-                onClick={toggleTheme}
-                aria-label={`Switch to ${dark ? "light" : "dark"} theme`}
-                className={`ml-auto flex h-10 w-10 items-center justify-center rounded-xl border transition ${
-                  dark
-                    ? "border-[#34415B] text-slate-300 hover:bg-[#202B40]"
-                    : "border-slate-200 text-slate-600 hover:bg-slate-50"
-                }`}
-              >
-                {dark ? (
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.8"
-                    className="h-5 w-5"
-                  >
-                    <circle cx="12" cy="12" r="4" />
-                    <path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42" />
-                  </svg>
-                ) : (
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.8"
-                    className="h-5 w-5"
-                  >
-                    <path d="M20.9 13A8.5 8.5 0 0 1 11 3.1 8.5 8.5 0 1 0 20.9 13Z" />
-                  </svg>
-                )}
-              </button>
+                </p>
+                <p className="text-[8px] tracking-[0.2em] text-slate-500">
+                  ACCESS MANAGEMENT
+                </p>
+              </div>
             </div>
 
-            <h2
-              className={`text-3xl font-bold tracking-[-0.045em] sm:text-[36px] ${
-                dark ? "text-slate-50" : "text-[#101321]"
-              }`}
-            >
-              Welcome <span className="text-[#7771FF]">back</span>
-            </h2>
+            {/* Heading */}
+            <div className="mb-6">
+              <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-xl border border-white bg-white/90 text-[#363199] shadow-md">
+                <LockKeyhole size={18} />
+              </div>
 
-            <p
-              className={`mt-2 text-sm leading-6 ${
-                dark ? "text-slate-400" : "text-slate-500"
-              }`}
-            >
-              Sign in to manage temporary access.
-            </p>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#7770C8]">
+                Secure sign in
+              </p>
 
-            <form onSubmit={handleSubmit} className="mt-7 space-y-5">
+              <h2 className="mt-1.5 text-2xl font-bold tracking-tight text-[#202344] sm:text-[30px]">
+                Welcome back
+              </h2>
+
+              <p className="mt-1.5 text-xs leading-5 text-slate-500 sm:text-sm">
+                Sign in to access your workspace.
+              </p>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-4">
               {/* Email */}
-
               <div>
                 <label
                   htmlFor="login-email"
-                  className={`mb-2 block text-sm font-semibold ${
-                    dark ? "text-slate-200" : "text-[#171923]"
-                  }`}
+                  className="mb-1.5 block text-xs font-medium text-[#383956]"
                 >
                   Work email
                 </label>
 
                 <div className="relative">
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.8"
-                    className={`absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 ${
-                      dark ? "text-slate-400" : "text-slate-500"
-                    }`}
-                  >
-                    <rect x="3" y="5" width="18" height="14" rx="2" />
-                    <path d="m4 7 8 6 8-6" />
-                  </svg>
+                  <Mail
+                    size={16}
+                    className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+                  />
 
                   <input
                     id="login-email"
@@ -305,51 +214,27 @@ const Login = () => {
                     autoComplete="email"
                     placeholder="you@company.com"
                     value={form.email}
-                    onChange={handleChange}
+                    onChange={updateField}
                     required
-                    className={`h-14 w-full rounded-[15px] border py-3 pl-12 pr-4 text-sm outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 ${
-                      dark
-                        ? "border-[#46536D] bg-[#0B1221] text-white"
-                        : "border-[#A8B3C7] bg-white text-[#111827]"
-                    }`}
+                    className="h-10 w-full rounded-xl border border-white bg-white/75 pl-10 pr-3 text-xs text-[#242647] shadow-sm outline-none transition placeholder:text-slate-400 hover:border-indigo-200 focus:border-[#7770C8] focus:bg-white focus:ring-4 focus:ring-indigo-100/70 sm:text-sm"
                   />
                 </div>
               </div>
 
               {/* Password */}
-
               <div>
-                <div className="mb-2 flex items-center justify-between gap-3">
-                  <label
-                    htmlFor="login-password"
-                    className={`block text-sm font-semibold ${
-                      dark ? "text-slate-200" : "text-[#171923]"
-                    }`}
-                  >
-                    Password
-                  </label>
-
-                  <a
-                    href="/forgot-password"
-                    className="text-sm font-semibold text-[#6585FF] transition hover:text-indigo-500"
-                  >
-                    Forgot password?
-                  </a>
-                </div>
+                <label
+                  htmlFor="login-password"
+                  className="mb-1.5 block text-xs font-medium text-[#383956]"
+                >
+                  Password
+                </label>
 
                 <div className="relative">
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.8"
-                    className={`absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 ${
-                      dark ? "text-slate-400" : "text-slate-500"
-                    }`}
-                  >
-                    <rect x="4" y="10" width="16" height="11" rx="3" />
-                    <path d="M8 10V7a4 4 0 0 1 8 0v3" />
-                  </svg>
+                  <LockKeyhole
+                    size={16}
+                    className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+                  />
 
                   <input
                     id="login-password"
@@ -358,158 +243,94 @@ const Login = () => {
                     autoComplete="current-password"
                     placeholder="Enter your password"
                     value={form.password}
-                    onChange={handleChange}
+                    onChange={updateField}
                     required
-                    className={`h-14 w-full rounded-[15px] border py-3 pl-12 pr-12 text-sm outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 ${
-                      dark
-                        ? "border-[#46536D] bg-[#0B1221] text-white"
-                        : "border-[#A8B3C7] bg-white text-[#111827]"
-                    }`}
+                    className="h-10 w-full rounded-xl border border-white bg-white/75 pl-10 pr-10 text-xs text-[#242647] shadow-sm outline-none transition placeholder:text-slate-400 hover:border-indigo-200 focus:border-[#7770C8] focus:bg-white focus:ring-4 focus:ring-indigo-100/70 sm:text-sm"
                   />
 
                   <button
                     type="button"
-                    onClick={() => setShowPassword(!showPassword)}
+                    onClick={() => setShowPassword((prev) => !prev)}
                     aria-label={showPassword ? "Hide password" : "Show password"}
-                    className={`absolute right-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-lg ${
-                      dark
-                        ? "text-slate-400 hover:bg-[#263148]"
-                        : "text-slate-500 hover:bg-slate-100"
-                    }`}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-lg p-1.5 text-slate-400 transition hover:bg-indigo-50 hover:text-indigo-700"
                   >
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.8"
-                      className="h-5 w-5"
-                    >
-                      {showPassword ? (
-                        <>
-                          <path d="M3 3l18 18" />
-                          <path d="M10.6 10.6a2 2 0 0 0 2.8 2.8" />
-                          <path d="M9.9 5.2A11 11 0 0 1 12 5c6.5 0 10 7 10 7a12 12 0 0 1-3.1 3.9M6.2 6.2C3.8 7.7 2 12 2 12s3.5 7 10 7c1 0 2-.2 2.9-.5" />
-                        </>
-                      ) : (
-                        <>
-                          <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" />
-                          <circle cx="12" cy="12" r="3" />
-                        </>
-                      )}
-                    </svg>
+                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
                 </div>
               </div>
 
-              {/* Remember me */}
+              {/* Remember me and Forgot password */}
+              <div className="flex items-center justify-between gap-3">
+                <label className="flex cursor-pointer items-center gap-2 text-xs text-slate-500">
+                  <input
+                    type="checkbox"
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
+                    className="h-3.5 w-3.5 rounded border-slate-300 accent-[#6255C4]"
+                  />
+                  Remember me
+                </label>
 
-              <label
-                className={`flex cursor-pointer items-center gap-3 text-sm ${
-                  dark ? "text-slate-400" : "text-slate-500"
-                }`}
-              >
-                <input
-                  type="checkbox"
-                  checked={keepSignedIn}
-                  onChange={(e) => setKeepSignedIn(e.target.checked)}
-                  className="h-[18px] w-[18px] rounded accent-indigo-600"
-                />
-
-                Keep me signed in on this device
-              </label>
+                <Link
+                  to="/forgot-password"
+                  className="text-xs font-medium text-[#6255C4] transition hover:text-[#363199]"
+                >
+                  Forgot password?
+                </Link>
+              </div>
 
               {/* Error */}
-
               {error && (
                 <p
                   role="alert"
-                  className="rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-500"
+                  className="rounded-lg border border-rose-100 bg-rose-50 px-3 py-2 text-xs text-rose-600"
                 >
                   {error}
                 </p>
               )}
 
-              {/* Sign In */}
-
+              {/* Submit */}
               <button
                 type="submit"
-                className="flex h-[60px] w-full items-center justify-center gap-2 rounded-[16px] bg-gradient-to-r from-[#4167F5] to-[#5140E9] text-sm font-bold text-white shadow-[0_12px_30px_rgba(67,83,235,0.25)] transition hover:-translate-y-0.5 hover:shadow-[0_16px_35px_rgba(67,83,235,0.35)] active:translate-y-0"
+                className="group flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#7164D8] to-[#5143B8] text-sm font-semibold text-white shadow-[0_8px_20px_rgba(91,76,190,0.22)] transition duration-200 hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0"
               >
-                Sign in <span className="text-lg">→</span>
+                Sign in
+                <ArrowRight
+                  size={16}
+                  className="transition-transform group-hover:translate-x-1"
+                />
               </button>
             </form>
 
             {/* Divider */}
-
-            <div className="my-7 flex items-center gap-4">
-              <span
-                className={`h-px flex-1 ${
-                  dark ? "bg-[#28344A]" : "bg-slate-200"
-                }`}
-              />
-
-              <span
-                className={`text-xs ${
-                  dark ? "text-slate-500" : "text-slate-400"
-                }`}
-              >
-                or
+            <div className="my-5 flex items-center gap-3">
+              <div className="h-px flex-1 bg-indigo-100" />
+              <span className="text-[10px] text-slate-400">
+                SECURE ACCESS
               </span>
-
-              <span
-                className={`h-px flex-1 ${
-                  dark ? "bg-[#28344A]" : "bg-slate-200"
-                }`}
-              />
+              <div className="h-px flex-1 bg-indigo-100" />
             </div>
 
-            {/* SSO */}
-
-            <button
-              type="button"
-              onClick={() =>
-                setError("Single sign-on is not configured yet.")
-              }
-              className={`flex h-[58px] w-full items-center justify-center gap-3 rounded-[15px] border text-sm font-semibold transition ${
-                dark
-                  ? "border-[#46536D] text-slate-100 hover:bg-[#1A2438]"
-                  : "border-[#A8B3C7] text-[#111827] hover:bg-slate-50"
-              }`}
-            >
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                className="h-5 w-5"
-              >
-                <path d="M12 3 20 7v5c0 5-3.5 7.8-8 9-4.5-1.2-8-4-8-9V7l8-4Z" />
-                <path d="m9 12 2 2 4-4" />
-              </svg>
-
-              Continue with SSO
-            </button>
-
             {/* Register link */}
+            <div className="text-center">
+              <p className="text-xs text-slate-500 sm:text-sm">
+                Don't have an account?{" "}
+                <Link
+                  to="/register"
+                  className="font-semibold text-[#6255C4] transition hover:text-[#363199]"
+                >
+                  Sign up
+                </Link>
+              </p>
+            </div>
 
-            <p
-              className={`mt-7 text-center text-sm ${
-                dark ? "text-slate-400" : "text-slate-500"
-              }`}
-            >
-              New to AccessFlow?{" "}
-              <a
-                href="/register"
-                className="font-semibold text-[#6585FF] transition hover:text-indigo-500"
-              >
-                Request access
-              </a>
-            </p>
+            <div className="mt-4 flex items-center justify-center gap-1.5 text-[10px] text-slate-400">
+              <ShieldCheck size={13} />
+              Your access. Your control.
+            </div>
           </div>
         </section>
       </div>
     </main>
   );
-};
-
-export default Login;
+}

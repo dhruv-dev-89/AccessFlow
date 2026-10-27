@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import GooeyNav from "./GooeyNav";
+import { Link } from "react-router-dom";
 
 function Navbar() {
   const [dark, setDark] = useState(() =>
@@ -188,19 +189,18 @@ function Navbar() {
           </button>
 
           {/* Sign In */}
-          <a
-            href="/login"
-            className="rounded-xl px-3.5 py-2 text-[13px] font-medium transition-all duration-200"
+          <Link
+            to={"/login"}
+            className="rounded-xl px-3.5 py-2  text-[13px] font-medium transition-all duration-200"
             style={{
               color: dark ? "#e6ebf5" : "#334155",
             }}
           >
             Sign in
-          </a>
+          </Link>
 
           {/* Get Started */}
-          <a
-            href="/register"
+          <Link  to={"/register"}
             className="rounded-xl px-4 py-2.5 text-[13px] font-semibold transition-all duration-200"
             style={{
               backgroundColor: dark ? "#f5f7fb" : "#2563eb",
@@ -211,7 +211,7 @@ function Navbar() {
             }}
           >
             Get started
-          </a>
+          </Link>
         </div>
 
         {/* Mobile Right */}

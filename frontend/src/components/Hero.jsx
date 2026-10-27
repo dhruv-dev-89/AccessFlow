@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 function Hero() {
   return (<section
@@ -56,8 +57,8 @@ function Hero() {
     <div className="mt-9 flex flex-col items-center gap-3 sm:flex-row">
 
       {/* Primary CTA */}
-      <a
-        href="/register"
+      <Link
+        to={"/register"}
         className="group inline-flex items-center justify-center gap-2 rounded-xl px-7 py-3.5 text-sm font-semibold shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-500/25"
         style={{
           backgroundColor: "#315FEA",
@@ -70,7 +71,7 @@ function Hero() {
         <span className="transition-transform duration-300 group-hover:translate-x-1">
           →
         </span>
-      </a>
+      </Link>
 
       {/* Secondary CTA */}
       <a
