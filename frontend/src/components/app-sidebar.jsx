@@ -13,10 +13,9 @@ import {
     SidebarHeader,
     SidebarRail,
 } from "@/components/ui/sidebar"
-import { GalleryVerticalEndIcon, AudioLinesIcon, TerminalIcon, TerminalSquareIcon, BotIcon, BookOpenIcon, Settings2Icon, FrameIcon, PieChartIcon, MapIcon } from "lucide-react"
+import { GalleryVerticalEndIcon, AudioLinesIcon, TerminalIcon, TerminalSquareIcon, BotIcon, BookOpenIcon, Settings2Icon, FrameIcon, PieChartIcon, MapIcon, Building2Icon, UsersIcon, Divide } from "lucide-react"
 import { NavManage } from "./nav-manage"
 
-// This is sample data.
 const data = {
     user: {
         name: "shadcn",
@@ -31,30 +30,14 @@ const data = {
                 />
             ),
             plan: "Enterprise",
-        },
-        {
-            name: "Acme Corp.",
-            logo: (
-                <AudioLinesIcon
-                />
-            ),
-            plan: "Startup",
-        },
-        {
-            name: "Evil Corp.",
-            logo: (
-                <TerminalIcon
-                />
-            ),
-            plan: "Free",
-        },
+        }
     ],
-    main:[
+    main: [
         {
-            name:"Users",
+            name: "Users",
         },
         {
-            name:"Organizations",
+            name: "Organizations",
         }
     ],
     navMain: [
@@ -62,8 +45,7 @@ const data = {
             title: "GitHub",
             url: "#",
             icon: (
-                <TerminalSquareIcon
-                />
+                <img className="h-5 w-5" src="/images/github.png" alt="" srcset="" />
             ),
             isActive: true,
             items: [
@@ -110,18 +92,115 @@ const data = {
     ],
 }
 
-export function AppSidebar({
-    ...props
-}) {
+const navByRole = {
+    super_admin: [
+        {
+            title: "Overview",
+            items: [
+                { name: "Dashboard", url: "/dashboard", icon: <PieChartIcon /> },
+            ],
+        },
+        {
+            title: "Management",
+            items: [
+                { name: "Organizations", url: "/admin/organizations", icon: <Building2Icon /> },
+                { name: "All Users", url: "/admin/users", icon: <UsersIcon /> },
+            ],
+        },
+        {
+            title: "Monitoring",
+            items: [
+                { name: "Audit Logs", url: "/admin/audit-logs", icon: <FrameIcon /> },
+            ],
+        },
+    ],
+
+    org_admin: [
+        {
+            title: "Overview",
+            items: [
+                { name: "Dashboard", url: "/dashboard", icon: <PieChartIcon /> },
+            ],
+        },
+        {
+            title: "Management",
+            items: [
+                { name: "Members", url: "/org/members", icon: <UsersIcon /> },
+                { name: "Resources", url: "/org/resources", icon: <Building2Icon /> },
+                { name: "Approvers", url: "/org/approvers", icon: <UsersIcon /> },
+            ],
+        },
+        {
+            title: "Access Management",
+            items: [
+                { name: "Access Requests", url: "/access-requests", icon: <FrameIcon /> },
+                { name: "Access Grants", url: "/access-grants", icon: <PieChartIcon /> },
+            ],
+        },
+    ],
+
+    approver: [
+        {
+            title: "Overview",
+            items: [
+                { name: "Dashboard", url: "/dashboard", icon: <PieChartIcon /> },
+            ],
+        },
+        {
+            title: "Approvals",
+            items: [
+                { name: "Pending Approvals", url: "/approvals/pending", icon: <FrameIcon /> },
+                { name: "Approval History", url: "/approvals/history", icon: <PieChartIcon /> },
+            ],
+        },
+    ],
+
+    member: [
+        {
+            title: "Overview",
+            items: [
+                { name: "Dashboard", url: "/dashboard", icon: <PieChartIcon /> },
+            ],
+        },
+        {
+            title: "My Access",
+            items: [
+                { name: "Available Resources", url: "/resources", icon: <Building2Icon /> },
+                { name: "My Requests", url: "/my-requests", icon: <FrameIcon /> },
+                { name: "My Grants", url: "/my-grants", icon: <PieChartIcon /> },
+            ],
+        },
+    ],
+};
+
+
+export function AppSidebar({ ...props }) {
+    const role = "member"
     return (
         <Sidebar collapsible="icon" {...props}>
             <SidebarHeader>
-                <TeamSwitcher teams={data.teams} />
+                <h2 className="flex items-center gap-2">
+                <div
+                    className="flex h-9 w-9 items-center justify-center rounded-xl text-sm font-semibold"
+                    style={{
+                    backgroundColor: "#111827",
+                    color: "#ffffff",
+                    boxShadow: "0 5px 18px rgba(15, 23, 42, 0.14)",
+                    }}
+                >
+                    A
+                </div>
+                Access Flow
+                </h2>            
             </SidebarHeader>
             <SidebarContent>
-                <NavManage title="Manage" items={data.main}/>
-                <NavMain  items={data.navMain}/>
-                <NavProjects title="Request Status" items={data.Requests}/>
+                {navByRole[role].map((group) => (
+                    <NavManage
+                        key={group.title}
+                        title={group.title}
+                        items={group.items}
+                    />
+                ))}
             </SidebarContent>
             <SidebarFooter>
                 <NavUser user={data.user} />
