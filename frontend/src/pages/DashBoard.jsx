@@ -1,51 +1,48 @@
 
+import OrganizationGrowthChart from '@/components/OrganizationGrowthChart'
 import RecentActivity from '@/components/RecentActivity'
 import RecentOrganizationTable from '@/components/RecentOrganizationTable'
 import StatCard from '@/components/StatCard'
-import { Ban, Building2, ShieldCheck, UserPlus } from 'lucide-react'
+import { Ban, Building2, Database, ShieldCheck, UserPlus } from 'lucide-react'
 import React from 'react'
 
 
 const DashBoard = () => {
 
   const activities = [
-    {
-      id: 1,
-      user: "Rahul Sharma",
-      action: "Created a new organization",
-      organization: "TechCorp",
-      date: "03 Nov 2026",
-      icon: <Building2 size={20} />,
-      status: "Created"
-    },
-    {
-      id: 2,
-      user: "Aman Verma",
-      action: "Invited a new user",
-      organization: "InnovateX",
-      date: "02 Nov 2026",
-      icon: <UserPlus size={20} />,
-      status: "Invited"
-    },
-    {
-      id: 3,
-      user: "Priya Singh",
-      action: "Created a new resource",
-      organization: "CloudSync",
-      date: "02 Nov 2026",
-      icon: <ShieldCheck size={20} />,
-      status: "Created"
-    },
-    {
-      id: 4,
-      user: "Arjun Kumar",
-      action: "Suspended an organization",
-      organization: "DevSphere",
-      date: "01 Nov 2026",
-      icon: <Ban size={20} />,
-      status: "Suspended"
-    }
-  ]
+  {
+    id: 1,
+    title: "New Organization Created",
+    description: "Rahul Sharma created TechCorp organization.",
+    time: "10 minutes ago",
+    icon: Building2,
+    color: "bg-blue-100 text-blue-600",
+  },
+  {
+    id: 2,
+    title: "New User Invited",
+    description: "Aman Verma invited a new user to InnovateX.",
+    time: "30 minutes ago",
+    icon: UserPlus,
+    color: "bg-green-100 text-green-600",
+  },
+  {
+    id: 3,
+    title: "New Resource Added",
+    description: "Priya Singh added CloudSync resource.",
+    time: "1 hour ago",
+    icon: Database,
+    color: "bg-purple-100 text-purple-600",
+  },
+  {
+    id: 4,
+    title: "Organization Suspended",
+    description: "Arjun Kumar suspended DevSphere organization.",
+    time: "3 hours ago",
+    icon: Ban,
+    color: "bg-red-100 text-red-600",
+  },
+  ];
 
   return (
     <div className='p-5'>
@@ -62,7 +59,10 @@ const DashBoard = () => {
           <h2 className="text-2xl font-bold text-black mb-5">
             Recent Organizations
           </h2>
-          <RecentOrganizationTable/>
+          <div className='flex flex-col gap-5'>
+            <RecentOrganizationTable/>
+            <OrganizationGrowthChart/>
+          </div>
         </div>
         <div className='flex flex-col  mt-20'>
           <h2 className="text-2xl  font-bold text-black mb-5">Access Request Overview</h2>
@@ -72,7 +72,10 @@ const DashBoard = () => {
             <StatCard title="Rejected Requests" value={10} />
           </div>
         </div>
-        <RecentActivity activities={activities}/>
+        <div className='mt-5'>
+          <RecentActivity activities={activities}/>
+        </div>
+        
     </div>
   )
 }

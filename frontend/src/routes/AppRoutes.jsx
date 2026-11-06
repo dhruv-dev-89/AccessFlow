@@ -3,6 +3,8 @@ import DashBoard from '@/pages/DashBoard'
 import LandingPage from '@/pages/LandingPage'
 import Login from '@/pages/Login'
 import Register from '@/pages/Register'
+import OrganizationDetails from '@/pages/super_admin/OrganizationDetails'
+import Organizations from '@/pages/super_admin/Organizations'
 import React from 'react'
 import { Route, Routes } from 'react-router-dom'
 
@@ -15,6 +17,8 @@ const AppRoutes = () => {
             <Route path='/login' element={<Login/>}/>
             <Route element={<DashboardLayout />}>
               <Route path='/dashboard' element={<DashBoard />} />
+              <Route path='/organizations' element={<Organizations/>}/>
+              <Route path="organizations/:id" element={<OrganizationDetails/>} />
             </Route>
         </Routes>
     </div>

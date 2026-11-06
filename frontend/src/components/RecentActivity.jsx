@@ -1,75 +1,67 @@
-import React from 'react'
-import { Clock, Building2, UserPlus, ShieldCheck, Ban } from 'lucide-react'
+import React from "react";
+import {
+  Building2,
+  UserPlus,
+  Database,
+  Ban,
+  ArrowUpRight,
+} from "lucide-react";
 
 
 
 const RecentActivity = ({activities}) => {
   return (
-    <div className="mt-12">
+    <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
 
-      <div className="flex items-center gap-2 mb-6">
-        <Clock size={24} />
-        <h2 className="text-2xl font-bold text-black">
-          Recent Platform Activity
-        </h2>
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h2 className="text-lg font-bold text-gray-900">
+            Recent Platform Activity
+          </h2>
+          <p className="text-sm text-gray-500 mt-1">
+            Latest activities across the platform
+          </p>
+        </div>
+
+        <button className="flex items-center gap-1 text-sm font-medium text-blue-600 hover:text-blue-800">
+          View All
+          <ArrowUpRight size={16} />
+        </button>
       </div>
 
-      <div className="border border-gray-300 rounded-2xl overflow-hidden">
+   
+      <div className="space-y-5">
+        {activities.map((activity) => {
+          const Icon = activity.icon;
 
-        <table className="w-full text-left">
+          return (
+            <div key={activity.id} className="flex items-start gap-4">
 
-          <thead className="bg-gray-100">
-            <tr>
-              <th className="p-4">User</th>
-              <th className="p-4">Activity</th>
-              <th className="p-4">Organization</th>
-              <th className="p-4">Date</th>
-              <th className="p-4">Status</th>
-            </tr>
-          </thead>
+              <div className={`p-3 rounded-xl ${activity.color}`}>
+                <Icon size={20} />
+              </div>
 
-          <tbody>
-            {activities.map((activity) => (
-              <tr key={activity.id} className="border-t border-gray-200">
+              <div className="flex-1 min-w-0">
+                <h3 className="text-sm font-semibold text-gray-900">
+                  {activity.title}
+                </h3>
 
-                <td className="p-4 font-medium">
-                  {activity.user}
-                </td>
+                <p className="text-sm text-gray-500 mt-1">
+                  {activity.description}
+                </p>
+              </div>
 
-                <td className="p-4">
-                  <div className="flex items-center gap-2">
-                    {activity.icon}
-                    {activity.action}
-                  </div>
-                </td>
+              <span className="text-xs text-gray-400 whitespace-nowrap">
+                {activity.time}
+              </span>
 
-                <td className="p-4">
-                  {activity.organization}
-                </td>
-
-                <td className="p-4">
-                  {activity.date}
-                </td>
-
-                <td className="p-4">
-                  <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                    activity.status === "Suspended"
-                      ? "bg-red-100 text-red-700"
-                      : "bg-green-100 text-green-700"
-                  }`}>
-                    {activity.status}
-                  </span>
-                </td>
-
-              </tr>
-            ))}
-          </tbody>
-
-        </table>
-
+            </div>
+          );
+        })}
       </div>
+
     </div>
-  )
-}
+  );
+};
 
 export default RecentActivity

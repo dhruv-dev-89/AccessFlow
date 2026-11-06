@@ -5,7 +5,6 @@ import * as React from "react"
 import { NavMain } from "@/components/nav-main"
 import { NavProjects } from "@/components/nav-projects"
 import { NavUser } from "@/components/nav-user"
-import { TeamSwitcher } from "@/components/team-switcher"
 import {
     Sidebar,
     SidebarContent,
@@ -103,14 +102,14 @@ const navByRole = {
         {
             title: "Management",
             items: [
-                { name: "Organizations", url: "/admin/organizations", icon: <Building2Icon /> },
-                { name: "All Users", url: "/admin/users", icon: <UsersIcon /> },
+                { name: "Organizations", url: "/organizations", icon: <Building2Icon /> },
+                { name: "All Users", url: "/users", icon: <UsersIcon /> },
             ],
         },
         {
             title: "Monitoring",
             items: [
-                { name: "Audit Logs", url: "/admin/audit-logs", icon: <FrameIcon /> },
+                { name: "Audit Logs", url: "/audit-logs", icon: <FrameIcon /> },
             ],
         },
     ],
@@ -175,7 +174,7 @@ const navByRole = {
 
 
 export function AppSidebar({ ...props }) {
-    const role = "member"
+    const role = "super_admin"
     return (
         <Sidebar collapsible="icon" {...props}>
             <SidebarHeader>
